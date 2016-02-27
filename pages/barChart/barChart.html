@@ -1,0 +1,100 @@
+<div id="statistics">
+  <div bs-active-pane="tabs" ng-click="draw(tabs)" bs-tabs>
+  <div title="All" bs-pane>
+    <div class="Back form-group"><br>
+      <div class="container">
+        <img class="imgIcon" src="img/all.png" alt="All">
+        <strong> All</strong>
+        <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-legend="true" chart-colours="colours"></canvas>
+      </div>
+    </div>
+  </div>
+  <div title="Motorcycles" bs-pane>
+    <div class="Back form-group"><br>
+      <div class="container">
+        <img class="imgIcon" src="img/vintage15.png" alt="Motorcylce">
+        <strong> Motorcylce</strong>
+        <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-legend="true" chart-colours="colours"></canvas>
+      </div>
+    </div>
+  </div>
+  <div title="Cars" bs-pane>
+    <div class="Back form-group"><br>
+      <div class="container">
+        <img class="imgIcon" src="img/car95.png" alt="Cars">
+        <strong> Cars</strong>
+        <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-legend="true" chart-colours="colours"></canvas>
+      </div>
+    </div>
+  </div>
+  <div title="Buses/Trucks" bs-pane>
+    <div class="Back form-group"><br>
+      <div class="container">
+        <img class="imgIcon" src="img/bus55.png" alt="Buses/Trucks">
+        <strong> Buses/Trucks</strong>
+        <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-legend="true" chart-colours="colours"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="row">
+    <div class="container panel-group" ng-model="activePanel" bs-collapse>
+      <button class="btn btn-primary" bs-collapse-toggle>Advanced Search <span class="glyphicon glyphicon-search"></span></button>
+      <div class="panel-collapse" bs-collapse-target>
+        <div class="well well-lg">
+          <div class="row">
+            <div class="col-xs-12">
+              <h4><strong>Select the search type:</strong></h4>
+            </div>
+            <form class="form-inline form-group container">
+              <div class="form-group">
+                <button ng-click="showToday=true; showDay=false; showRange=false" class="btn btn-primary" ng-model="radioModel" btn-radio="'Left'" uncheckable>Today</button>
+              </div>
+              <div class="form-group">
+                <button ng-click="showToday=false; showDay=true; showRange=false" class="btn btn-primary" ng-model="radioModel" btn-radio="'Middle'" uncheckable>Other day</button>
+              </div>
+              <div class="form-group">
+                <button ng-click="showToday=false; showDay=false; showRange=true" class="btn btn-primary" ng-model="radioModel" btn-radio="'Right'" uncheckable>Range of date</button>
+              </div>
+            </form>
+          </div>
+          <hr>
+          <div>
+            <form action="" class="form-inline">
+              <div ng-show="showToday" class="form-group dropdown-whiteColor">
+                <label class="control-label"><span class="glyphicon glyphicon-calendar"></span> Date </label>
+                <input type="text" class="form-control" ng-model="Today" name="date" bs-datepicker disabled>
+              </div>
+              <div ng-show="showDay"class="form-group dropdown-whiteColor" ng-class="{'has-error': datepickerForm.date.$invalid}">
+                <label class="control-label"><span class="glyphicon glyphicon-calendar"></span> Date </label>
+                <input type="text" class="form-control" ng-model="selectedDate" name="date" data-max-date="{{maxDate}}" placeholder="Select" bs-datepicker>
+              </div>
+              <div ng-show="showRange" class="form-group">
+                <label class="control-label"><span class="glyphicon glyphicon-calendar"></span> <span class="glyphicon glyphicon-resize-horizontal"></span> <span class="glyphicon glyphicon-calendar"></span> Date range </label>
+                <div class="form-group dropdown-whiteColor">
+                  <input type="text" class="form-control" ng-model="fromDate"  data-max-date="{{maxDate}}" placeholder="From" bs-datepicker>
+                </div>
+                <div class="form-group dropdown-whiteColor">
+                  <input type="text" class="form-control" ng-model="untilDate"  data-min-date="{{fromDate}}" data-max-date="{{maxDate}}" placeholder="Until" bs-datepicker>
+                </div>
+              </div>
+              <div class="form-group  dropdown-whiteColor">
+                <label class="control-label"><span class="glyphicon glyphicon-time"></span> From:</label>
+                <input type="text" class="form-control" size="8" ng-model="fromTime" name="time" bs-timepicker
+                data-time-format="HH:mm a" data-length="1" data-minute-step="1" data-arrow-behavior="picker">
+              </div>
+              <div class="form-group dropdown-whiteColor">
+                <label class="control-label"><span class="glyphicon glyphicon-time"></span> To:</label>
+                <input type="text" class="form-control" size="8" ng-model="toTime" name="time" bs-timepicker
+                data-time-format="HH:mm a" data-length="1" data-minute-step="1" data-arrow-behavior="picker">
+              </div>
+              <hr>
+            </form>
+            <button class="btn btn-default" type="submit" ng-click="search()">Search</button>
+          </div>
+        </div>
+      </div> 
+    </div>
+  </div>
+</div>

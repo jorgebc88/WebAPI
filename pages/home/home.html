@@ -1,0 +1,118 @@
+<header class="headerHome" id="home">
+  <div class="container">
+  </div>
+  <div class="imgbc">
+    <div class="container text-center">
+      <h1>¡WELCOME!</h1>
+      <br>
+      <br>
+      <h1>On this website you will be able to analyze the statistics regarding traffic.</h1>
+      <br>
+      <br>
+      <br>
+      <h2>Using this application you will have the chance to distinguish between the differents kind of elements prensent in vehicular traffic: motorbikes, cars and trucks.</h2>
+    </div>
+  </div>
+</header>
+<div class="container" id="video">
+  <div class="row videoHome">
+    <article class="articleMain container col-xs-12 col-md-8">
+      <form class="form-inline">
+        <div class="form-group">
+          <label class="text-left"><h1>Camera</h1></label>
+        </div>
+        <div class="form-group">
+          <button type="button" class="btn btn-default dropdown-whiteColor" ng-model="cameraSelected" data-html="1" bs-options="camera.location for camera in cameras" bs-select>
+            Action <span class="caret"></span>
+          </button>
+        </div>
+      </form>
+      <div class="responsive-container">
+        <div class="dummy"></div>
+        <div class="img-container">
+           <!--<img ng-src="http://192.168.2.120:{{port}}" alt="{{cameraSelected.location}}" height="100%" width="90%">-->
+        </div>
+      </div>
+      
+    </article>
+    <aside class="asideMain col-xs-12 col-md-4">
+      <form class="form-inline">
+      <label><h1 class="text-left">Statistics</h1></label>
+      </form>
+      <div class="col-md-12 col-sm-6 col-xs-12">
+        <div class="info-box">
+          <span class="info-box-icon bg-gray"><img class="imgIcon" src="img/all.png" alt="All"></span>
+          <div class="info-box-content">
+            <span class="info-box-text">All</span>
+            <span class="info-box-number">{{bike + car + bus}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 col-sm-6 col-xs-12">
+        <div class="info-box">
+          <span class="info-box-icon bg-red"><img class="imgIcon" src="img/vintage15.png" alt="Bikes"></span>
+          <div class="info-box-content">
+            <span class="info-box-text">Bikes</span>
+            <span class="info-box-number">{{bike}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix visible-sm-block"></div>
+      <div class="col-md-12 col-sm-6 col-xs-12">
+        <div class="info-box">
+          <span class="info-box-icon bg-green"><img class="imgIcon" src="img/car95.png" alt="Cars"></span>
+          <div class="info-box-content">
+            <span class="info-box-text">Cars</span>
+            <span class="info-box-number">{{car}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 col-sm-6 col-xs-12">
+        <div class="info-box">
+          <span class="info-box-icon bg-yellow"><img class="imgIcon" src="img/bus55.png" alt="Buses/Trucks"></span>
+          <div class="info-box-content">
+            <span class="info-box-text">Buses/Trucks</span>
+            <span class="info-box-number">{{bus}}</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+<div id="info">
+  <div class="container text-center"><h1>ABOUT US</h1></div>  
+  <br>
+  <br>
+  <div class="container text-center-xs">
+    <div class="form-group col-xs-12 col-sm-2" >
+      <img class="imgAboutUs" src="img/1.png" alt="Juan Pablo Abuin">
+    </div>
+    <div class="col-xs-12 col-sm-10">
+      <h3>Abuin Juan Pablo</h3>
+      <h3>juanpabloabuin@gmail.com</h3>
+      <a href="https://www.facebook.com/Juampi.Abuin" target="_blank"><h3>/Juampi.Abuin</h3></a>
+    </div>
+  </div>
+  <br>
+  <div class="container text-center-xs">
+    <div class="form-group col-xs-12 col-sm-2">
+      <img class="imgAboutUs" src="img/2.png" alt="Jorge Ezequiel Bravo Córdoba">
+    </div>
+    <div class="col-xs-12 col-sm-10">
+      <h3>Bravo Córdoba Jorge Ezequiel</h3>
+      <h3>jorgebc@gmail.com</h3>
+      <a href="https://www.facebook.com/jorgebc" target="_blank"><h3>/jorgebc</h3></a>
+    </div>
+  </div>
+  <br>
+  <div class="container text-center-xs">
+    <div class="form-group col-xs-12 col-sm-2">
+      <img class="imgAboutUs" src="img/3.png" alt="Marco Vittorio Ciotola">
+    </div>
+    <div class="col-xs-12 col-sm-10">
+      <h3>Ciotola Marco Vittorio</h3>
+      <h3>mvccool90.com</h3>
+      <a href="https://www.facebook.com/marco.ciotola.7" target="_blank"><h3>/marco.ciotola.7</h3></a>
+    </div>
+  </div>
+</div>

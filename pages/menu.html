@@ -1,0 +1,29 @@
+<div class="aside navbar navbar-inverse" tabindex="-1" role="dialog">
+  <div class="aside-dialog">
+    <div class="aside-content">
+      <div class="aside-header" ng-show="title">
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h4 class="aside-title" ng-bind="title"></h4>
+      </div>
+      <div class="aside-body" ng-bind="content"></div>
+      <div class="container">
+        <ul class="nav navbar-nav" role="menu">
+          <li class="nav-divider"></li>
+          <li><a href="#/home#home" ng-click="closeAside()">Home</a></li>
+          <li><a href="#/home#presentation" ng-click="closeAside()"><span class="glyphicon glyphicon-blackboard col-xs-offset-1"></span> Presentation</a></li>
+          <li><a href="#/home#video" ng-click="closeAside()"><span class="glyphicon glyphicon-facetime-video col-xs-offset-1"></span> Video</a></li>
+          <li><a href="#/home#info" ng-click="closeAside()"><span class="glyphicon glyphicon-info-sign col-xs-offset-1"></span> About us</a></li>
+          <li class="nav-divider"></li>
+          <li><a href="">Statistics</a></li>
+          <li><a href="#/statistics#statistics" ng-click="closeAside()"><span class="glyphicon glyphicon-adjust col-xs-offset-1"></span> Pie chart stats</a></li>
+          <li><a href="#/stats#statistics" ng-click="closeAside()"><span class="glyphicon glyphicon-stats col-xs-offset-1"></span> Bar stats</a></li>
+          <li class="nav-divider"></li>
+          <li><a href="#/admin#admin" ng-show="userConnected.level==1" ng-click="closeAside()">Admin</a></li>
+          <li class="nav-divider"></li>
+          <li><a href=""><span class="glyphicon glyphicon-user"></span> {{userConnected.name}}</a></li>
+          <li ng-click="showModal()"><a href="" ng-click="closeAside()"><span class="glyphicon glyphicon-log-out col-xs-offset-1"></span> Close session</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

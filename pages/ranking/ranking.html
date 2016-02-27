@@ -1,0 +1,28 @@
+<div id="statistics">
+  <div bs-active-pane="tabsHorizontal" ng-click="activeTab(tabsHorizontal)" bs-tabs>
+    <div title="Ranking historical" bs-pane>
+    </div>
+    <div title="Ranking by year" bs-pane>
+      <form class="form-inline container col-xs-12 col-xs-offset-1">
+          <br>
+          <div class="form-group">
+            <label class="control-label"><i class="fa fa-calendar"></i> Select year:</label>
+            <input type="text" class="form-control" ng-change="open(selectedDate)" ng-model="selectedDate" data-min-view="2" data-min-date="{{minDate}}" data-max-date="{{maxDate}}" data-date-format="yyyy" data-autoclose="true" bs-datepicker>
+          </div>
+        </form>
+      <div class="Back form-group"><br>
+        
+        <div class="container text-center">
+          <div class="col-xs-12">
+            <h1><strong> TOP 5 ({{year}})</strong></h1>
+          </div>
+          <div class="col-xs-12"> 
+            <canvas id="canvas" chart-legend="true" width="100%" height="100%"></canvas>  
+          </div>
+        </div>
+      </div>
+    </div>
+    <div title="Ranking by month of the year" bs-pane></div>
+    <div title="Ranking by dates" bs-pane></div>
+  </div>
+</div>
