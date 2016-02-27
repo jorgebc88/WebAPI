@@ -154,7 +154,7 @@ adminService.cameraList().then(function(data){
   ];
 }]).value('duScrollOffset', 30);
 
-app.controller("pieChartCtrl",['$scope','$http','$location', function ($scope,$http,$location) { 
+app.controller("pieChartCtrl",['$scope','$http','$location', 'cameraService', function ($scope,$http,$location,cameraService) {
   $scope.colours = [
     { // red
         fillColor: "rgba(221,75,57,0.2)",
@@ -180,37 +180,54 @@ app.controller("pieChartCtrl",['$scope','$http','$location', function ($scope,$h
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgba(243,156,18,0.8)"
     }];
+  cameraService.cameraList().then(function(data){
+    $scope.cameras = [];
+    angular.forEach(data.data, function(data){
+      if (data.active == true) {
+        $scope.cameras.push(data);
+      }
+    });
+    $scope.cameraSelected = $scope.cameras[0];
+    $scope.refresh($scope.cameraSelected.id);
+  });
+
   $scope.objectDetected = [];
   $scope.options = {
     responsive : true,
   };
 
-  $scope.sse = $.SSE('http://localhost:8080/REST-API/detectedObject/serverSentEvents?cameraId=1', {
-    onOpen: function(e){  
-    },
-    onEnd: function(e){ 
-    },
-    onError: function(e){ 
-      console.log("Could not connect"); 
-    },
-    onMessage: function(e){ 
-      $scope.objectDetected = angular.fromJson(e.data);
-      $scope.bike = $scope.objectDetected.detectedObject[0].bike;
-      $scope.car = $scope.objectDetected.detectedObject[0].car;
-      $scope.bus = $scope.objectDetected.detectedObject[0].bus;
-      if ($location.path() != "/statistics"){
-        $scope.sse.stop();
+  $scope.refresh = function (id) {
+    $scope.sse = $.SSE('http://localhost:8080/REST-API/detectedObject/serverSentEvents?cameraId=' + id, {
+      onOpen: function (e) {
+      },
+      onEnd: function (e) {
+      },
+      onError: function (e) {
+        console.log("Could not connect");
+      },
+      onMessage: function (e) {
+        $scope.objectDetected = angular.fromJson(e.data);
+        $scope.bike = $scope.objectDetected.detectedObject[0].bike;
+        $scope.car = $scope.objectDetected.detectedObject[0].car;
+        $scope.bus = $scope.objectDetected.detectedObject[0].bus;
+        if ($location.path() != "/statistics") {
+          $scope.sse.stop();
+        }
+        $scope.$apply(function () {
+          $scope.labels = ["Bikes", "Cars", "Buses/Trucks"];
+          $scope.data = [$scope.bike, $scope.car, $scope.bus];
+          if($scope.cameraSelected.id != id) {
+            $scope.sse.stop();
+            $scope.refresh($scope.cameraSelected.id);
+          }
+        });
       }
-      $scope.$apply(function () {
-        $scope.labels = ["Bikes", "Cars", "Buses/Trucks"];
-        $scope.data = [$scope.bike, $scope.car, $scope.bus];
-      });
-    }    
-  });
-$scope.sse.start();
+    });
+    $scope.sse.start();
+  }
 }]);
 
-app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', '$filter', function ($scope,$http,$location,objectService,$filter) { 
+app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', 'cameraService', '$filter', function ($scope,$http,$location,objectService,cameraService, $filter) {
   $scope.Today = new Date();
   $scope.maxDate= new Date();
   $scope.fromTime = new Date();
@@ -282,10 +299,18 @@ app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', '$
   $scope.clear = function() {
     $scope.mytime = null;
   };
-
+  $scope.showCameraList = true;
   $scope.showToday = true;
   $scope.showDay = false;
   $scope.showRange = false;
+
+  cameraService.cameraList().then(function(data){
+    $scope.cameras = [];
+    angular.forEach(data.data, function(data){
+        $scope.cameras.push(data);
+    });
+    $scope.cameraSelected = $scope.cameras[0];
+  });
 
   $scope.search = function () {
     if ($scope.showToday) {
@@ -306,7 +331,7 @@ app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', '$
     $scope.endDay.setHours($scope.toTime.getHours());
     $scope.endDay.setMinutes($scope.toTime.getMinutes());
 
-    objectService.searchObjects($scope.startDay, $scope.endDay).then(function (data) {
+    objectService.searchObjects($scope.startDay, $scope.endDay, $scope.cameraSelected.id).then(function (data) {
       $scope.draw($scope.tabs, data);
     }, function(){
       $scope.draw($scope.tabs, 0);
@@ -408,13 +433,6 @@ app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', '$
     $scope.thursdayUp = [];
     $scope.fridayUp =[];
     $scope.saturdayUp = [];
-    $scope.sundayDown = [];
-    $scope.mondayDown = [];
-    $scope.tuesdayDown = [];
-    $scope.wednesdayDown = [];
-    $scope.thursdayDown = [];
-    $scope.fridayDown =[];
-    $scope.saturdayDown = [];
     $scope.data = [];
 
     if(angular.isDefined(data)){
@@ -427,44 +445,30 @@ app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', '$
         if(date.getDay() == 0) {
           if (value.direction == "North")
             $scope.sundayUp.push(value);
-          else
-            $scope.sundayDown.push(value);           
         }
         else if(date.getDay() == 1) {
           if (value.direction == "North")
             $scope.mondayUp.push(value);
-          else
-            $scope.mondayDown.push(value);           
         }
         else if(date.getDay() == 2) {
           if (value.direction == "North")
             $scope.tuesdayUp.push(value);
-          else
-            $scope.tuesdayDown.push(value);           
         }
         else if(date.getDay() == 3) {
           if (value.direction == "North")
             $scope.wednesdayUp.push(value);
-          else
-            $scope.wednesdayDown.push(value);           
         }
         else if(date.getDay() == 4) {
           if (value.direction == "North")
             $scope.thursdayUp.push(value);
-          else
-            $scope.thursdayDown.push(value);           
         }
         else if(date.getDay() == 5) {
           if (value.direction == "North")
             $scope.fridayUp.push(value);
-          else
-            $scope.fridayDown.push(value);           
         }
         else if(date.getDay() == 6) {
           if (value.direction == "North")
             $scope.saturdayUp.push(value);
-          else
-            $scope.saturdayDown.push(value);           
         }
       }
     });
@@ -475,10 +479,9 @@ app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', '$
         
     });
     $scope.labels = ['Sunday', 'Monday', 'Thursday', 'Wednesday', 'Tuesday', 'Friday', 'Saturday'];
-    $scope.series = [$scope.legend + '-Up', $scope.legend + '-Down'];
+    $scope.series = [$scope.legend + '-North'];
     $scope.data = [
-      [$scope.sundayUp.length, $scope.mondayUp.length, $scope.tuesdayUp.length, $scope.wednesdayUp.length, $scope.thursdayUp.length, $scope.fridayUp.length, $scope.saturdayUp.length],
-      [$scope.sundayDown.length, $scope.mondayDown.length, $scope.tuesdayDown.length, $scope.wednesdayDown.length, $scope.thursdayDown.length, $scope.fridayDown.length, $scope.saturdayDown.length]
+      [$scope.sundayUp.length, $scope.mondayUp.length, $scope.tuesdayUp.length, $scope.wednesdayUp.length, $scope.thursdayUp.length, $scope.fridayUp.length, $scope.saturdayUp.length]
     ];
     $scope.colours = [$scope.colorUp, $scope.colorDown];
   }
@@ -494,28 +497,48 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
   $scope.year = $scope.aux.getFullYear();
   $scope.legend="";
   $scope.tabsHorizontal = 0;
-
+  $scope.currentTab = 0;
   adminService.cameraList().then(function(data){
           $scope.cameras = data.data;
           $scope.activeTab(0);
   });
 
   $scope.activeTab = function(tab) {
+    $scope.currentTab = tab;
     if (tab == 0) {
-     
+      $scope.drawHistorical();
     } else if(tab == 1) {
       $scope.drawByYear($scope.year);
     } else if(tab == 2) {
-
+      $scope.drawByMonth($scope.year);
     } else if(tab == 3) {
-
+      $scope.drawByDates($scope.year);
     }
   };
+  $scope.drawHistorical = function () {
+    rankingService.rankingHistorical().then(function (data) {
+      $scope.drawHorizontalBar(data.data);
+    });
+  };
+
   $scope.drawByYear = function (year) {
     rankingService.rankingByYear(year).then(function (data) {
       $scope.drawHorizontalBar(data.data);
     });
   };
+
+  $scope.drawByMonth = function (month, year) {
+    rankingService.rankingByMonth(month, year).then(function (data) {
+      $scope.drawHorizontalBar(data.data);
+    });
+  };
+
+  $scope.drawByDates = function (startDate, endDate) {
+    rankingService.rankingByYear(startDate, endDate).then(function (data) {
+      $scope.drawHorizontalBar(data.data);
+    });
+  };
+
 
   $scope.drawHorizontalBar = function(data) {
     if(angular.isDefined($scope.chart)){
@@ -569,8 +592,18 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
         data : amount
       }]
     };
-    
-    var ctx = document.getElementById("canvas").getContext("2d");
+    var currentTab;
+    if ($scope.currentTab == 0) {
+      currentTab = "historical";
+    } else if($scope.currentTab == 1) {
+      currentTab = "byYear";
+    } else if($scope.currentTab == 2) {
+      currentTab = "byMonth";
+    } else if($scope.currentTab == 3) {
+      currentTab = "byDates";
+    }
+
+    var ctx = document.getElementById(currentTab).getContext("2d");
     $scope.chart = new Chart(ctx).HorizontalBar(barChartData, {
       barShowStroke: false,
     }); 
@@ -579,6 +612,12 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
   $scope.open = function(selectedDate) {
     $scope.year = selectedDate.getFullYear();
     $scope.drawByYear($scope.year);
+  }
+
+  $scope.open2 = function(selectedDate) {
+    $scope.year = selectedDate.getFullYear();
+    $scope.month = selectedDate.getMonth();
+    $scope.drawByMonth($scope.month, $scope.year);
   }
 }]);
 

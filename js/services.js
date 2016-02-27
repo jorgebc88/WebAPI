@@ -25,8 +25,8 @@ app.service('objectService', ['$http', function ($http){
     return $http.get('http://localhost:8080/REST-API/detectedObject/requestDetectedObject');
   };
 
-  var searchObjects = function(startDate, endDate) {
-    return $http.get('http://localhost:8080/REST-API/detectedObject/requestDetectedObjectByDatesBetweenAndCameraId?startDate=' + startDate + '&endDate=' + endDate + '&cameraId=' + 1);
+  var searchObjects = function(startDate, endDate, id) {
+    return $http.get('http://localhost:8080/REST-API/detectedObject/requestDetectedObjectByDatesBetweenAndCameraId?startDate=' + startDate + '&endDate=' + endDate + '&cameraId=' + id);
   };
 
   return {
@@ -35,6 +35,18 @@ app.service('objectService', ['$http', function ($http){
   }
 
 }]);
+
+app.service('cameraService', ['$http', function ($http){
+  var cameraList = function () {
+    return $http.get('http://localhost:8080/REST-API/camera/list');
+  };
+
+  return {
+    cameraList : cameraList
+  }
+
+}]);
+
 
 app.service('adminService', ['$http', function ($http){
   var userList = function () {
@@ -73,12 +85,28 @@ app.service('adminService', ['$http', function ($http){
 }]);
 
 app.service('rankingService', ['$http', function ($http){
+  var rankingHistorical = function (year) {
+    return $http.get('http://localhost:8080/REST-API/detectedObject/allTimeRanking');
+  };
+
   var rankingByYear = function (year) {
     return $http.get('http://localhost:8080/REST-API/detectedObject/rankingByYear?year=' + year);
   };
 
+  var rankingByMonth = function (month, year) {
+    return $http.get('http://localhost:8080/REST-API/detectedObject/rankingByYearAndMonth?year=' + year + '&month=' + month);
+  };
+
+  var rankingByDates = function (startDate, endDate) {
+    return $http.get('http://localhost:8080/REST-API/detectedObject/rankingBetweenDates?startDate=' + startDate + '&endDate='  + endDate);
+  };
+
+
   return {
-    rankingByYear : rankingByYear
+    rankingHistorical : rankingHistorical,
+    rankingByYear : rankingByYear,
+    rankingByMonth : rankingByMonth,
+    rankingByDates : rankingByDates
   }
 
 }]);
