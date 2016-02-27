@@ -1,0 +1,73 @@
+<div class="col-xs-12" id="statistics">
+  <h1 class="text-center">Stats in real time</h1>
+  <div class="row">
+
+    <div class="col-xs-12 col-xs-offset-0 col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-0">
+      <div class="col-xs-12 col-xs-offset-0 col-sm-10 col-sm-offset-1">
+        <h2 class="text-justify">Percentages</h2>
+        <div class="pieChart">
+          <canvas id="doughnut" class="chart chart-doughnut" chart-data="data" chart-labels="labels" chart-colours="colours"></canvas>
+        </div>
+        
+      </div>
+    </div>
+    <div class="continer col-xs-12 col-xs-offset-0 col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-0">
+      <div class="row col-xs-12 col-xs-offset-0 col-sm-10 col-sm-offset-1">
+        <h2>References</h2>
+        <div class="col-xs-12 linkBlack">
+          <a href="">
+            <div class="info-box" ng-click="clickAll()">
+              <span class="info-box-icon bg-lighten-3">
+                <img class="imgIcon" src="img/all.png" alt="All">
+              </span>
+              <div class="info-box-content">
+                <span class="info-box-text">All</span>
+                <span class="info-box-number">{{person + bike + car + bus}}</span>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-12 col-sm-6 col-xs-12 linkBlack">
+          <a href="">
+            <div class="info-box" ng-click="clickBike()">
+              <span class="info-box-icon bg-red">
+                <img class="imgIcon" src="img/vintage15.png" alt="Bikes">
+              </span>
+              <div class="info-box-content">
+                <span class="info-box-text">Bikes</span>
+                <span class="info-box-number">{{bike}}</span>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="clearfix visible-sm-block"></div>
+        <div class="col-md-12 col-sm-6 col-xs-12 linkBlack">
+          <a href="">
+            <div class="info-box" ng-click="clickCar()">
+              <span class="info-box-icon bg-green">
+                <img class="imgIcon" src="img/car95.png" alt="Cars">
+              </span>
+              <div class="info-box-content">
+                <span class="info-box-text">Cars</span>
+                <span class="info-box-number">{{car}}</span>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-12 col-sm-6 col-xs-12 linkBlack">
+          <a href="">
+            <div class="info-box" ng-click="clickBus()">
+              <span class="info-box-icon bg-yellow">
+                <img class="imgIcon" src="img/bus55.png" alt="Buses/Trucks">
+              </span>
+              <div class="info-box-content">
+                <span class="info-box-text">Buses/Trucks</span>
+                <span class="info-box-number">{{bus}}</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

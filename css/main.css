@@ -1,0 +1,10 @@
+/* CSS Document */
+
+@font-face{
+		src: url('../files/MyriadPro-Regular.otf');
+	}
+
+	body
+	{
+		font-family: 'MyryadPro',verdana,helvetica,arial,sans-serif;
+	}
