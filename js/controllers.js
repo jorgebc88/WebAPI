@@ -1,4 +1,4 @@
-var app = angular.module('app.controllers',['ngRoute','ngResource','ngCookies','ngSanitize','ngAnimate', 'chart.js','duScroll','mgcrea.ngStrap','mgcrea.ngStrap.helpers.parseOptions', 'datatables', 'datatables.select', 'datatables.buttons', 'datatables.bootstrap']);
+var app = angular.module('app.controllers',['ngRoute','ngResource','ngCookies','ngSanitize','ngAnimate', 'chart.js','duScroll','mgcrea.ngStrap','mgcrea.ngStrap.helpers.parseOptions', 'datatables', 'datatables.select', 'datatables.buttons', 'datatables.bootstrap','ui.select']);
 
 app.controller('indexCtrl',['$scope','$cookieStore','$location','userConService','$http', '$modal', '$aside', function ($scope,$cookieStore,$location,userConService,$http,$modal,$aside){  
 var myOtherAside = $aside({scope: $scope, show: false, template: 'pages/menu.html', animation: "am-fade-and-slide-left", placement: "left"});
@@ -16,6 +16,7 @@ $scope.dropdown = [
 {text: 'Pie chart stats', href: '#/statistics#statistics'},
 {text: 'Bar stats', href: '#/stats#statistics'},
 {text: 'Rankings', href: '#/ranking#statistics'},
+{text: 'Traffic flow statistics', href: '#/trafficFlow#statistics'}
 ];
 $scope.isActive = function (viewLocation) { 
   return viewLocation === $location.path();
@@ -619,6 +620,128 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
     $scope.month = selectedDate.getMonth();
     $scope.drawByMonth($scope.month, $scope.year);
   }
+}]);
+
+app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminService', function ($scope,$http,trafficFlowService,adminService){
+  $scope.tabsHorizontal = 0;
+  $scope.days = [{id: 1, day:"Sunday"}, {id: 2, day:"Monday"}, {id: 3, day:"Thursday"}, {id: 4, day:"Wednesday"}, {id: 5, day:"Tuesday"}, {id: 6, day:"Friday"}, {id: 7, day:"Saturday"}];
+  $scope.auxCamera = 0;
+  $scope.auxDay = 0;
+  $scope.peakHourOptions = {
+    scaleOverride: true,
+    scaleSteps: 23,
+    scaleStepWidth: 1,
+    scaleLabel: "<%=value%>:00 hs"
+  }
+
+  adminService.cameraList().then(function(data){
+    $scope.cameras = [];
+    angular.forEach(data.data, function(data){
+      if (data.active == true) {
+        $scope.cameras.push(data);
+      }
+    });
+    $scope.selected = $scope.cameras[0];
+    $scope.selectedDay = $scope.days[0];
+    $scope.drawByHours($scope.selected.id,1);
+    $scope.drawByPeakHours($scope.selected.id);
+    $scope.drawByDays($scope.selected.id);
+    $scope.drawByMonths($scope.selected.id);
+  });
+
+  $scope.drawByHours = function (camera, day) {
+    if (camera != 0) {
+      $scope.auxCamera = camera;
+    }
+    if (day != 0) {
+      $scope.auxDay = day;
+    }
+    $scope.hourLabels = [];
+    $scope.hourSeries = [];
+    $scope.hourData = []; 
+    $scope.dataAux4 = []; 
+    for(var i = 0; i < 24; i++){
+      $scope.hourLabels.push(i+":00 hs");
+      $scope.dataAux4.push(0);
+    }  
+    console.log($scope.hourLabels);    
+    trafficFlowService.detectedObjectsHistogramByHour($scope.auxCamera, $scope.auxDay).then(function(data){
+      console.log("data",data);
+      angular.forEach(data.data, function(data){
+        var position = data[0] - 1;
+        $scope.dataAux4.splice(position,1,data[1]);
+      });
+      $scope.hourSeries = ['Object detected'];
+      $scope.hourData = [$scope.dataAux4];   
+    });
+  };
+
+  $scope.drawByPeakHours = function (camera) {
+    $scope.peakHourLabels = [];
+    $scope.peakHourSeries = [];
+    $scope.peakHourData = []; 
+    $scope.dataAux = []; 
+    for(var i = 0; i < 7; i++){
+      $scope.dataAux.push(0);
+    }      
+    trafficFlowService.peakHoursByDaysOfTheWeekAndCamera(camera).then(function(data){
+      angular.forEach(data.data, function(data){
+        var position = data[0] - 1;
+        $scope.dataAux.splice(position,1,data[1]);
+      });
+      $scope.peakHourLabels = ["Sunday", "Monday", "Thursday", "Wednesday", "Tuesday", "Friday", "Saturday"];
+      $scope.peakHourSeries = ['Peak hour'];
+      $scope.peakHourData = [$scope.dataAux];   
+    });
+  };
+
+  $scope.drawByDays = function (camera) {
+    $scope.dayLabels = [];
+    $scope.daySeries = [];
+    $scope.dayData = []; 
+    $scope.dataAux2 = [];
+    
+    for(var i = 0; i < 12; i++){
+      $scope.dataAux2.push(0);
+    }     
+    
+    trafficFlowService.detectedObjectsHistogramByDayOfTheWeek(camera).then(function(data){
+      var i = 1;
+      angular.forEach(data.data, function(data){
+        var position = data[0] - 1;
+        $scope.dataAux2.splice(position,1,data[1]);
+      });  
+      $scope.dayLabels = ["Sunday", "Monday", "Thursday", "Wednesday", "Tuesday", "Friday", "Saturday"];
+      $scope.daySeries = ['Object detected'];
+      $scope.dayData = [$scope.dataAux2];
+    });
+  };
+
+  $scope.drawByMonths = function (camera) {
+    $scope.monthLabels = [];
+    $scope.monthSeries = [];
+    $scope.monthData = []; 
+    $scope.dataAux3 = [];
+    
+    for(var i = 0; i < 12; i++){
+      $scope.dataAux3.push(0);
+    }     
+    
+    trafficFlowService.detectedObjectsHistogramByMonthOfTheYear(camera).then(function(data){
+      var i = 1;
+      angular.forEach(data.data, function(data){
+        var position = data[0] - 1;
+        $scope.dataAux3.splice(position,1,data[1]);
+      });
+      $scope.monthLabels = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      $scope.monthSeries = ['Object detected'];
+      $scope.monthData = [$scope.dataAux3];
+    });
+  };
+
+
+
+
 }]);
 
 app.controller('adminCtrl',[ '$scope', 'adminService', '$modal', '$alert', 'DTOptionsBuilder', 'DTDefaultOptions', 'DTColumnDefBuilder', function ($scope, adminService, $modal, $alert, DTOptionsBuilder, DTDefaultOptions, DTColumnDefBuilder) {
