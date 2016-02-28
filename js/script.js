@@ -43,6 +43,10 @@ app.config(['$routeProvider', function($routeProvider) {
     controller: 'rankingCtrl',
     templateUrl: 'pages/ranking/ranking.html'
   })
+  .when('/trafficFlow', {
+    controller: 'trafficFlowCtrl',
+    templateUrl: 'pages/trafficFlow/trafficFlow.html'
+  })
   .when('/admin', {
     controller: 'adminCtrl',
     templateUrl: 'pages/admin/admin.html'
