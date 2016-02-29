@@ -483,7 +483,7 @@ app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', 'c
         $scope.chart.destroy();
         
     });
-    $scope.labels = ['Sunday', 'Monday', 'Thursday', 'Wednesday', 'Tuesday', 'Friday', 'Saturday'];
+    $scope.labels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     $scope.series = [$scope.legend + '-North'];
     $scope.data = [
       [$scope.sundayUp.length, $scope.mondayUp.length, $scope.tuesdayUp.length, $scope.wednesdayUp.length, $scope.thursdayUp.length, $scope.fridayUp.length, $scope.saturdayUp.length]
@@ -647,7 +647,7 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
 
 app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminService', function ($scope,$http,trafficFlowService,adminService){
   $scope.tabsHorizontal = 0;
-  $scope.days = [{id: 1, day:"Sunday"}, {id: 2, day:"Monday"}, {id: 3, day:"Thursday"}, {id: 4, day:"Wednesday"}, {id: 5, day:"Tuesday"}, {id: 6, day:"Friday"}, {id: 7, day:"Saturday"}];
+  $scope.days = [{id: 1, day:"Sunday"}, {id: 2, day:"Monday"}, {id: 3, day:"Tuesday"}, {id: 4, day:"Wednesday"}, {id: 5, day:"Thursday"}, {id: 6, day:"Friday"}, {id: 7, day:"Saturday"}];
   $scope.auxCamera = 0;
   $scope.auxDay = 0;
   $scope.peakHourOptions = {
@@ -710,7 +710,7 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
         var position = data[0] - 1;
         $scope.dataAux.splice(position,1,data[1]);
       });
-      $scope.peakHourLabels = ["Sunday", "Monday", "Thursday", "Wednesday", "Tuesday", "Friday", "Saturday"];
+      $scope.peakHourLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       $scope.peakHourSeries = ['Peak hour'];
       $scope.peakHourData = [$scope.dataAux];   
     });
@@ -732,7 +732,7 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
         var position = data[0] - 1;
         $scope.dataAux2.splice(position,1,data[1]);
       });  
-      $scope.dayLabels = ["Sunday", "Monday", "Thursday", "Wednesday", "Tuesday", "Friday", "Saturday"];
+      $scope.dayLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       $scope.daySeries = ['Object detected'];
       $scope.dayData = [$scope.dataAux2];
     });
