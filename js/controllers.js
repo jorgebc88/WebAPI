@@ -147,7 +147,6 @@ adminService.cameraList().then(function(data){
   $scope.sse.start();
 
   };
-  
   $scope.parts = [
   {name: "Presentation", link: "presentation"},
   {name: "Video", link: "video"},
@@ -491,14 +490,23 @@ app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', 'c
 app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService', function ($scope,$http,rankingService,adminService) { 
   $scope.maxDate = new Date();
   $scope.minDate = new Date('2000');
-  $scope.startDate = $scope.minDate;
+  $scope.startDate = new Date('2000');
   $scope.aux = new Date();
   $scope.selectedDate = new Date();
-  
+
   $scope.year = $scope.aux.getFullYear();
+
+  $scope.yearByM = $scope.aux.getFullYear();
+  $scope.monthByM = $scope.aux.getMonth() + 1;
+
+  $scope.fromDate = new Date();
+  $scope.fromDate.setYear(2010);
+  $scope.untilDate = new Date();
+
   $scope.legend="";
   $scope.tabsHorizontal = 0;
   $scope.currentTab = 0;
+
   adminService.cameraList().then(function(data){
           $scope.cameras = data.data;
           $scope.activeTab(0);
@@ -511,9 +519,9 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
     } else if(tab == 1) {
       $scope.drawByYear($scope.year);
     } else if(tab == 2) {
-      $scope.drawByMonth($scope.year);
+      $scope.drawByMonth($scope.monthByM, $scope.yearByM);
     } else if(tab == 3) {
-      $scope.drawByDates($scope.year);
+      $scope.drawByDates($scope.fromDate, $scope.untilDate);
     }
   };
   $scope.drawHistorical = function () {
@@ -534,12 +542,11 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
     });
   };
 
-  $scope.drawByDates = function (startDate, endDate) {
-    rankingService.rankingByYear(startDate, endDate).then(function (data) {
+  $scope.drawByDates = function (startDay, endDay) {
+    rankingService.rankingByDates(startDay, endDay).then(function (data) {
       $scope.drawHorizontalBar(data.data);
     });
   };
-
 
   $scope.drawHorizontalBar = function(data) {
     if(angular.isDefined($scope.chart)){
@@ -610,16 +617,27 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
     }); 
   };
 
-  $scope.open = function(selectedDate) {
+  $scope.openByYear = function(selectedDate) {
     $scope.year = selectedDate.getFullYear();
     $scope.drawByYear($scope.year);
   }
 
-  $scope.open2 = function(selectedDate) {
-    $scope.year = selectedDate.getFullYear();
-    $scope.month = selectedDate.getMonth();
-    $scope.drawByMonth($scope.month, $scope.year);
+  $scope.openByMonth = function(selectedDate) {
+    $scope.yearByM = selectedDate.getFullYear();
+    $scope.monthByM = selectedDate.getMonth() + 1;
+    $scope.drawByMonth($scope.monthByM, $scope.yearByM);
   }
+
+  $scope.changeFromDate = function(selectedDate) {
+    $scope.fromDate = selectedDate;
+    $scope.drawByDates($scope.fromDate, $scope.untilDate);
+  }
+
+  $scope.changeUntilDate = function(selectedDate) {
+    $scope.untilDate = selectedDate;
+    $scope.drawByDates($scope.fromDate, $scope.untilDate);
+  }
+
 }]);
 
 app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminService', function ($scope,$http,trafficFlowService,adminService){
@@ -637,9 +655,7 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
   adminService.cameraList().then(function(data){
     $scope.cameras = [];
     angular.forEach(data.data, function(data){
-      if (data.active == true) {
         $scope.cameras.push(data);
-      }
     });
     $scope.selected = $scope.cameras[0];
     $scope.selectedDay = $scope.days[0];
@@ -902,6 +918,7 @@ app.controller('adminCtrl',[ '$scope', 'adminService', '$modal', '$alert', 'DTOp
     $scope.latitude='';
     $scope.longitude='';
     $scope.ip='';
+    $scope.pointingAt='';
     $scope.myform.$setPristine();
     return ($scope.locationGood && $scope.latitudeGood && $scope.longitudeGood && $scope.ipGood)
   };

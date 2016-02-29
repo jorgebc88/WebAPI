@@ -13,7 +13,7 @@
     <div class="Back form-group"><br>
       <div class="container">
         <img class="imgIcon" src="img/vintage15.png" alt="Motorcylce">
-        <strong> Motorcylce</strong>
+        <strong> Motorcycle</strong>
         <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-legend="true" chart-colours="colours"></canvas>
       </div>
     </div>
@@ -79,13 +79,13 @@
               <div ng-show="showRange" class="form-group">
                 <label class="control-label"><span class="glyphicon glyphicon-calendar"></span> <span class="glyphicon glyphicon-resize-horizontal"></span> <span class="glyphicon glyphicon-calendar"></span> Date range </label>
                 <div class="form-group dropdown-whiteColor">
-                  <input type="text" class="form-control" ng-model="fromDate"  data-max-date="{{maxDate}}" placeholder="From" bs-datepicker>
+                  <input type="text" class="form-control" ng-model="fromDate"  data-max-date="{{untilDate}}" placeholder="From" bs-datepicker>
                 </div>
                 <div class="form-group dropdown-whiteColor">
                   <input type="text" class="form-control" ng-model="untilDate"  data-min-date="{{fromDate}}" data-max-date="{{maxDate}}" placeholder="Until" bs-datepicker>
                 </div>
               </div>
-              <div class="form-group  dropdown-whiteColor">
+              <div class="form-group dropdown-whiteColor">
                 <label class="control-label"><span class="glyphicon glyphicon-time"></span> From:</label>
                 <input type="text" class="form-control" size="8" ng-model="fromTime" name="time" bs-timepicker
                 data-time-format="HH:mm a" data-length="1" data-minute-step="1" data-arrow-behavior="picker">

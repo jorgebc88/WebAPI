@@ -93,6 +93,7 @@
                             <th class="text-center">Latitude</th>
                             <th class="text-center">Longitude</th>
                             <th class="text-center">Ip</th>
+                            <th class="text-center">Pointing at</th>
                             <th class="text-center">Active</th>
                         </tr>
                     </thead>
@@ -105,6 +106,7 @@
                             <td>{{camera.latitude}}</td>
                             <td>{{camera.longitude}}</td>
                             <td>{{camera.ip}}</td>
+                            <td>{{camera.pointingAt}}</td>
                             <td class="text-center"><input type="checkbox" ng-checked="{{camera.active}}" disabled></td>
                         </tr>
                     </tbody>
@@ -155,7 +157,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="activeCamera" class="col-sm-2 control-label">Level:</label>
+                                <label for="activeCamera" class="col-sm-2 control-label">Active:</label>
                                 <div class="col-sm-4">
                                     <select id="activeCamera" name="activeCamera" ng-model="activeCamera" class="form-control" >
                                         <option value="1" ng-selected="activeCamera">Enabled</option>

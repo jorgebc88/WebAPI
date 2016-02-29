@@ -85,7 +85,7 @@ app.service('adminService', ['$http', function ($http){
 }]);
 
 app.service('rankingService', ['$http', function ($http){
-  var rankingHistorical = function (year) {
+  var rankingHistorical = function () {
     return $http.get('http://localhost:8080/REST-API/detectedObject/allTimeRanking');
   };
 
