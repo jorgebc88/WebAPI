@@ -14,7 +14,7 @@ $scope.LoggedUser = [
 ];
 $scope.dropdown = [
 {text: 'Pie chart stats', href: '#/statistics#statistics'},
-{text: 'Bar stats', href: '#/stats#statistics'},
+{text: 'Bar chart stats', href: '#/stats#statistics'},
 {text: 'Rankings', href: '#/ranking#statistics'},
 {text: 'Traffic flow statistics', href: '#/trafficFlow#statistics'}
 ];
@@ -28,7 +28,7 @@ if($scope.userCon.connected == true){
   $scope.userConnected.level = 1;
   $scope.userConnected.connected = true;
 };
-var myOtherModal = $modal({title : '¿Está seguro que desea cerrar sesión?',scope: $scope, template: 'pages/modal.html', show: false});
+var myOtherModal = $modal({title : 'Are you sure you want to logout?',scope: $scope, template: 'pages/modal.html', show: false});
 // Show when some event occurs (use $promise property to ensure the template has been loaded)
 $scope.showModal = function() {
   myOtherAside.$promise.then(myOtherAside.hide());
@@ -155,6 +155,11 @@ adminService.cameraList().then(function(data){
 }]).value('duScrollOffset', 30);
 
 app.controller("pieChartCtrl",['$scope','$http','$location', 'cameraService', function ($scope,$http,$location,cameraService) {
+  $scope.bike = 32;
+  $scope.car = 125;
+  $scope.bus = 15;
+  $scope.labels = ["Bikes", "Cars", "Buses/Trucks"];
+  $scope.data = [$scope.bike, $scope.car, $scope.bus];
   $scope.colours = [
     { // red
         fillColor: "rgba(221,75,57,0.2)",
@@ -193,7 +198,7 @@ app.controller("pieChartCtrl",['$scope','$http','$location', 'cameraService', fu
 
   $scope.objectDetected = [];
   $scope.options = {
-    responsive : true,
+    responsive : false,
   };
 
   $scope.refresh = function (id) {
