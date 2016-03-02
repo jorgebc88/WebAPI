@@ -22,11 +22,11 @@ app.service('userRememberService', ['$cookieStore', function ($cookieStore){
 
 app.service('objectService', ['$http', function ($http){
   var detectedObject = function () {
-    return $http.get('http://localhost:8080/REST-API/detectedObject/requestDetectedObject');
+    return $http.get('http://192.168.2.120:8080/REST-API/detectedObject/requestDetectedObject');
   };
 
   var searchObjects = function(startDate, endDate, id) {
-    return $http.get('http://localhost:8080/REST-API/detectedObject/requestDetectedObjectByDatesBetweenAndCameraId?startDate=' + startDate + '&endDate=' + endDate + '&cameraId=' + id);
+    return $http.get('http://192.168.2.120:8080/REST-API/detectedObject/requestDetectedObjectByDatesBetweenAndCameraId?startDate=' + startDate + '&endDate=' + endDate + '&cameraId=' + id);
   };
 
   return {
@@ -38,7 +38,7 @@ app.service('objectService', ['$http', function ($http){
 
 app.service('cameraService', ['$http', function ($http){
   var cameraList = function () {
-    return $http.get('http://localhost:8080/REST-API/camera/list');
+    return $http.get('http://192.168.2.120:8080/REST-API/camera/list');
   };
 
   return {
@@ -50,27 +50,27 @@ app.service('cameraService', ['$http', function ($http){
 
 app.service('adminService', ['$http', function ($http){
   var userList = function () {
-    return $http.get('http://localhost:8080/REST-API/user/list');
+    return $http.get('http://192.168.2.120:8080/REST-API/user/list');
   };
 
   var deleteUser = function (id) {
-    return $http.get('http://localhost:8080/REST-API/user/delete/' + id);
+    return $http.get('http://192.168.2.120:8080/REST-API/user/delete/' + id);
   };
 
   var addUser = function (userName, password, level){
-    return $http.post('http://localhost:8080/REST-API/user/newUser', {"userName": userName, "password": password, "level": level});
+    return $http.post('http://192.168.2.120:8080/REST-API/user/newUser', {"userName": userName, "password": password, "level": level});
   };
 
   var cameraList = function () {
-    return $http.get('http://localhost:8080/REST-API/camera/list');
+    return $http.get('http://192.168.2.120:8080/REST-API/camera/list');
   };
 
   var activeCamera = function (id, active) {
-    return $http.get('http://localhost:8080/REST-API/camera/modifyCamera?id='+ id + '&active=' + active);
+    return $http.get('http://192.168.2.120:8080/REST-API/camera/modifyCamera?id='+ id + '&active=' + active);
   };
 
   var addCamera = function (location, latitude, longitude, ip, active){
-    return $http.post('http://localhost:8080/REST-API/camera/newCamera', {"location": location, "latitude": latitude, "longitude": longitude, "ip": ip, "active": active});
+    return $http.post('http://192.168.2.120:8080/REST-API/camera/newCamera', {"location": location, "latitude": latitude, "longitude": longitude, "ip": ip, "active": active});
   };
 
   return {
@@ -86,19 +86,19 @@ app.service('adminService', ['$http', function ($http){
 
 app.service('rankingService', ['$http', function ($http){
   var rankingHistorical = function () {
-    return $http.get('http://localhost:8080/REST-API/detectedObject/allTimeRanking');
+    return $http.get('http://192.168.2.120:8080/REST-API/detectedObject/allTimeRanking');
   };
 
   var rankingByYear = function (year) {
-    return $http.get('http://localhost:8080/REST-API/detectedObject/rankingByYear?year=' + year);
+    return $http.get('http://192.168.2.120:8080/REST-API/detectedObject/rankingByYear?year=' + year);
   };
 
   var rankingByMonth = function (month, year) {
-    return $http.get('http://localhost:8080/REST-API/detectedObject/rankingByYearAndMonth?year=' + year + '&month=' + month);
+    return $http.get('http://192.168.2.120:8080/REST-API/detectedObject/rankingByYearAndMonth?year=' + year + '&month=' + month);
   };
 
   var rankingByDates = function (startDate, endDate) {
-    return $http.get('http://localhost:8080/REST-API/detectedObject/rankingBetweenDates?startDate=' + startDate + '&endDate='  + endDate);
+    return $http.get('http://192.168.2.120:8080/REST-API/detectedObject/rankingBetweenDates?startDate=' + startDate + '&endDate='  + endDate);
   };
 
 
@@ -113,19 +113,19 @@ app.service('rankingService', ['$http', function ($http){
 
 app.service('trafficFlowService', ['$http', function ($http){
   var peakHoursByDaysOfTheWeekAndCamera = function (camera) {
-    return $http.get('http://localhost:8080/REST-API/detectedObject/peakHoursByDaysOfTheWeekAndCamera?cameraId=' + camera);
+    return $http.get('http://192.168.2.120:8080/REST-API/detectedObject/peakHoursByDaysOfTheWeekAndCamera?cameraId=' + camera);
   };
 
   var detectedObjectsHistogramByMonthOfTheYear = function (camera) {
-    return $http.get('http://localhost:8080/REST-API/detectedObject/detectedObjectsHistogramByMonthOfTheYear?cameraId=' + camera);
+    return $http.get('http://192.168.2.120:8080/REST-API/detectedObject/detectedObjectsHistogramByMonthOfTheYear?cameraId=' + camera);
   };
 
   var detectedObjectsHistogramByDayOfTheWeek = function (camera) {
-    return $http.get('http://localhost:8080/REST-API/detectedObject/detectedObjectsHistogramByDayOfTheWeek?cameraId=' + camera);
+    return $http.get('http://192.168.2.120:8080/REST-API/detectedObject/detectedObjectsHistogramByDayOfTheWeek?cameraId=' + camera);
   };  
 
   var detectedObjectsHistogramByHour = function (camera,day) {
-    return $http.get('http://localhost:8080/REST-API/detectedObject/detectedObjectsHistogramByHour?dayOfTheWeek='+ day + '&cameraId=' + camera);
+    return $http.get('http://192.168.2.120:8080/REST-API/detectedObject/detectedObjectsHistogramByHour?dayOfTheWeek='+ day + '&cameraId=' + camera);
   }; 
 
   return {
