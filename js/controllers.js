@@ -35,7 +35,7 @@ $scope.showModal = function() {
   myOtherModal.$promise.then(myOtherModal.show);
 };
 $scope.logout = function(){
-$http.get('http://localhost:8080/REST-API/user/logout');//http://192.168.2.108:8080
+$http.get('http://192.168.2.120:8080/REST-API/user/logout');//http://192.168.2.108:8080
 $scope.userConnected = {'name': "", 'level': "", 'connected':""};
 $cookieStore.remove('connected');
 $cookieStore.remove('level');
@@ -57,7 +57,7 @@ app.controller('loginCtrl',['$scope','$http','$q','$log','$cookieStore','$locati
   $scope.loginControl = function(){
     if($scope.userName != null && $scope.password != null){
       $scope.login();
-    }   else{
+    } else {
       $modal({title: 'ERROR!', content: 'Please complete the fields',  animation: 'am-fade-and-scale',
         placement: 'center'});
     }
@@ -65,10 +65,10 @@ app.controller('loginCtrl',['$scope','$http','$q','$log','$cookieStore','$locati
   $scope.login = function (){
     var userName = $scope.userName;
     var password = $scope.password;
-    var usr = $http.post('http://localhost:8080/REST-API/user/login', {"userName": userName, "password": password})
+    var usr = $http.post('http://192.168.2.120:8080/REST-API/user/login', {"userName": userName, "password": password})
     .then(function(response) {
       session.resolve(response.data);
-    },function(response) {
+    }, function (response) {
       $modal({title: 'ERROR '+ status, content: 'User or Password invalid',  animation: 'am-fade-and-scale',
         placement: 'center'});
     });
@@ -103,7 +103,7 @@ app.controller('loginCtrl',['$scope','$http','$q','$log','$cookieStore','$locati
   };
 }]);
 
-app.controller('homeCtrl',['$scope', '$document', '$http', '$location','adminService', function ($scope, $document, $http, $location, adminService) {
+app.controller('homeCtrl',['$scope', '$document', '$http', '$location','adminService', '$modal', function ($scope, $document, $http, $location, adminService, $modal) {
 $scope.bike =0;
 $scope.car =0;
 $scope.bus =0;
@@ -117,9 +117,12 @@ adminService.cameraList().then(function(data){
   $scope.cameraSelected = $scope.cameras[0];
   $scope.port = $scope.cameraSelected.id + 8090;
   $scope.video($scope.cameraSelected.id);
-});
+}, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
+  });
   $scope.video = function (id) {
-    $scope.sse = $.SSE('http://localhost:8080/REST-API/detectedObject/serverSentEvents?cameraId=' + id, {
+    $scope.sse = $.SSE('http://192.168.2.120:8080/REST-API/detectedObject/serverSentEvents?cameraId=' + id, {
     onOpen: function(e){  
     },
     onEnd: function(e){ 
@@ -154,10 +157,10 @@ adminService.cameraList().then(function(data){
   ];
 }]).value('duScrollOffset', 30);
 
-app.controller("pieChartCtrl",['$scope','$http','$location', 'cameraService', function ($scope,$http,$location,cameraService) {
-  $scope.bike = 32;
-  $scope.car = 125;
-  $scope.bus = 15;
+app.controller("pieChartCtrl",['$scope','$http','$location', 'cameraService', '$modal', function ($scope,$http,$location,cameraService, $modal) {
+  $scope.bike = 0;
+  $scope.car = 0;
+  $scope.bus = 0;
   $scope.labels = ["Bikes", "Cars", "Buses/Trucks"];
   $scope.data = [$scope.bike, $scope.car, $scope.bus];
   $scope.colours = [
@@ -194,6 +197,9 @@ app.controller("pieChartCtrl",['$scope','$http','$location', 'cameraService', fu
     });
     $scope.cameraSelected = $scope.cameras[0];
     $scope.refresh($scope.cameraSelected.id);
+  }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
   });
 
   $scope.objectDetected = [];
@@ -202,7 +208,7 @@ app.controller("pieChartCtrl",['$scope','$http','$location', 'cameraService', fu
   };
 
   $scope.refresh = function (id) {
-    $scope.sse = $.SSE('http://localhost:8080/REST-API/detectedObject/serverSentEvents?cameraId=' + id, {
+    $scope.sse = $.SSE('http://192.168.2.120:8080/REST-API/detectedObject/serverSentEvents?cameraId=' + id, {
       onOpen: function (e) {
       },
       onEnd: function (e) {
@@ -232,7 +238,7 @@ app.controller("pieChartCtrl",['$scope','$http','$location', 'cameraService', fu
   }
 }]);
 
-app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', 'cameraService', '$filter', function ($scope,$http,$location,objectService,cameraService, $filter) {
+app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', 'cameraService', '$filter', '$modal', function ($scope,$http,$location,objectService,cameraService, $filter, $modal) {
   $scope.Today = new Date();
   $scope.maxDate= new Date();
   $scope.fromTime = new Date();
@@ -315,6 +321,9 @@ app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', 'c
         $scope.cameras.push(data);
     });
     $scope.cameraSelected = $scope.cameras[0];
+  }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
   });
 
   $scope.search = function () {
@@ -492,7 +501,7 @@ app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', 'c
   }
 }]);
 
-app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService', function ($scope,$http,rankingService,adminService) { 
+app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService', '$modal', function ($scope,$http,rankingService,adminService, $modal) { 
   $scope.maxDate = new Date();
   $scope.minDate = new Date('2000');
   $scope.startDate = new Date('2000');
@@ -515,6 +524,9 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
   adminService.cameraList().then(function(data){
           $scope.cameras = data.data;
           $scope.activeTab(0);
+  }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
   });
 
   $scope.activeTab = function(tab) {
@@ -532,25 +544,37 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
   $scope.drawHistorical = function () {
     rankingService.rankingHistorical().then(function (data) {
       $scope.drawHorizontalBar(data.data);
-    });
+    }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
+  });
   };
 
   $scope.drawByYear = function (year) {
     rankingService.rankingByYear(year).then(function (data) {
       $scope.drawHorizontalBar(data.data);
-    });
+    }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
+  });
   };
 
   $scope.drawByMonth = function (month, year) {
     rankingService.rankingByMonth(month, year).then(function (data) {
       $scope.drawHorizontalBar(data.data);
-    });
+    }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
+  });
   };
 
   $scope.drawByDates = function (startDay, endDay) {
     rankingService.rankingByDates(startDay, endDay).then(function (data) {
       $scope.drawHorizontalBar(data.data);
-    });
+    }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
+  });
   };
 
   $scope.drawHorizontalBar = function(data) {
@@ -645,7 +669,7 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
 
 }]);
 
-app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminService', function ($scope,$http,trafficFlowService,adminService){
+app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminService', '$modal', function ($scope,$http,trafficFlowService,adminService,$modal){
   $scope.tabsHorizontal = 0;
   $scope.days = [{id: 1, day:"Sunday"}, {id: 2, day:"Monday"}, {id: 3, day:"Tuesday"}, {id: 4, day:"Wednesday"}, {id: 5, day:"Thursday"}, {id: 6, day:"Friday"}, {id: 7, day:"Saturday"}];
   $scope.auxCamera = 0;
@@ -668,6 +692,9 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
     $scope.drawByPeakHours($scope.selected.id);
     $scope.drawByDays($scope.selected.id);
     $scope.drawByMonths($scope.selected.id);
+  }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
   });
 
   $scope.drawByHours = function (camera, day) {
@@ -694,7 +721,10 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
       });
       $scope.hourSeries = ['Object detected'];
       $scope.hourData = [$scope.dataAux4];   
-    });
+    }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
+  });
   };
 
   $scope.drawByPeakHours = function (camera) {
@@ -713,7 +743,10 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
       $scope.peakHourLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       $scope.peakHourSeries = ['Peak hour'];
       $scope.peakHourData = [$scope.dataAux];   
-    });
+    }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
+  });
   };
 
   $scope.drawByDays = function (camera) {
@@ -735,7 +768,10 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
       $scope.dayLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       $scope.daySeries = ['Object detected'];
       $scope.dayData = [$scope.dataAux2];
-    });
+    }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
+  });
   };
 
   $scope.drawByMonths = function (camera) {
@@ -757,7 +793,10 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
       $scope.monthLabels = ["January","February","March","April","May","June","July","August","September","October","November","December"];
       $scope.monthSeries = ['Object detected'];
       $scope.monthData = [$scope.dataAux3];
-    });
+    }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
+  });
   };
 
 
@@ -826,7 +865,10 @@ app.controller('adminCtrl',[ '$scope', 'adminService', '$modal', '$alert', 'DTOp
   $scope.userList = function () {
     adminService.userList().then(function (data){
       $scope.Users = data.data;
-    });
+    }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
+  });
   };
   $scope.userList();
 
