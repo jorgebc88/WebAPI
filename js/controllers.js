@@ -507,6 +507,7 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
   $scope.startDate = new Date('2000');
   $scope.aux = new Date();
   $scope.selectedDate = new Date();
+  $scope.selectedDate2 = new Date();
 
   $scope.year = $scope.aux.getFullYear();
 
@@ -516,78 +517,63 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
   $scope.fromDate = new Date();
   $scope.fromDate.setYear(2010);
   $scope.untilDate = new Date();
-
-  $scope.legend="";
   $scope.tabsHorizontal = 0;
-  $scope.currentTab = 0;
 
   adminService.cameraList().then(function(data){
-          $scope.cameras = data.data;
-          $scope.activeTab(0);
+    $scope.cameras = data.data;
+    $scope.drawHistorical();
+    $scope.drawByYear($scope.year);
+    $scope.drawByMonth($scope.monthByM, $scope.yearByM);
+    $scope.drawByDates($scope.fromDate, $scope.untilDate);
   }, function () {
-      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
-        placement: 'center'});
+    $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+      placement: 'center'});
   });
 
-  $scope.activeTab = function(tab) {
-    $scope.currentTab = tab;
-    if (tab == 0) {
-      $scope.drawHistorical();
-    } else if(tab == 1) {
-      $scope.drawByYear($scope.year);
-    } else if(tab == 2) {
-      $scope.drawByMonth($scope.monthByM, $scope.yearByM);
-    } else if(tab == 3) {
-      $scope.drawByDates($scope.fromDate, $scope.untilDate);
-    }
-  };
   $scope.drawHistorical = function () {
     rankingService.rankingHistorical().then(function (data) {
-      $scope.drawHorizontalBar(data.data);
+      $scope.drawHorizontalBar(data.data, 0);
     }, function () {
       $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
         placement: 'center'});
-  });
+    });
   };
 
   $scope.drawByYear = function (year) {
     rankingService.rankingByYear(year).then(function (data) {
-      $scope.drawHorizontalBar(data.data);
+      $scope.drawHorizontalBar(data.data, 1);
     }, function () {
       $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
         placement: 'center'});
-  });
+    });
   };
 
   $scope.drawByMonth = function (month, year) {
     rankingService.rankingByMonth(month, year).then(function (data) {
-      $scope.drawHorizontalBar(data.data);
+      $scope.drawHorizontalBar(data.data, 2);
     }, function () {
       $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
         placement: 'center'});
-  });
+    });
   };
 
   $scope.drawByDates = function (startDay, endDay) {
     rankingService.rankingByDates(startDay, endDay).then(function (data) {
-      $scope.drawHorizontalBar(data.data);
+      $scope.drawHorizontalBar(data.data, 3);
     }, function () {
       $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
         placement: 'center'});
-  });
+    });
   };
 
-  $scope.drawHorizontalBar = function(data) {
-    if(angular.isDefined($scope.chart)){
-      $scope.chart.destroy();
-    }
-
+  $scope.drawHorizontalBar = function(data, activeTab) {
+    $scope.labels = [];
     var dataChart = [];
     var labels = [];
     var amount = [];
     var counter = 0;
     var flag = 0;
-    
+
     angular.forEach($scope.cameras, function(camera){
       angular.forEach(data, function(data){
         counter++;
@@ -596,7 +582,6 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
           flag = 1;
         }
       })
-
       if (flag == 0) {
         dataChart.push({"location": camera.location, "amount":0})
       } else {
@@ -611,39 +596,28 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
     for (var i = dataChart.length; i < 5; i++) {
       dataChart.splice(-10,0,{"location": "No camera", "amount":0});
     };
-    
+
     angular.forEach(dataChart, function(dataChart){
       labels.push(dataChart.location);
       amount.push(dataChart.amount);
     });
 
-    var barChartData = {
-      labels : labels,
-      datasets : [{
-        fillColor: "rgba(51,3,0,0.2)",
-        strokeColor: "rgba(51,3,0,1)",
-        pointColor: "rgba(51,3,0,1)",
-        pointStrokeColor: "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(51,3,0,0.8)",
-        data : amount
-      }]
-    };
-    var currentTab;
-    if ($scope.currentTab == 0) {
-      currentTab = "historical";
-    } else if($scope.currentTab == 1) {
-      currentTab = "byYear";
-    } else if($scope.currentTab == 2) {
-      currentTab = "byMonth";
-    } else if($scope.currentTab == 3) {
-      currentTab = "byDates";
-    }
+    $scope.labels = labels;
+    $scope.type = "HorizontalBar";
 
-    var ctx = document.getElementById(currentTab).getContext("2d");
-    $scope.chart = new Chart(ctx).HorizontalBar(barChartData, {
-      barShowStroke: false,
-    }); 
+    if (activeTab == 0) {
+      $scope.data1 = [];
+      $scope.data1 = [amount];
+    } else if(activeTab == 1) {
+      $scope.data2 = [];
+      $scope.data2 = [amount];
+    } else if(activeTab == 2) {
+      $scope.data3 = [];
+      $scope.data3  = [amount];
+    } else if(activeTab == 3) {
+      $scope.data4 = [];
+      $scope.data4  = [amount];
+    }
   };
 
   $scope.openByYear = function(selectedDate) {
@@ -666,7 +640,6 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
     $scope.untilDate = selectedDate;
     $scope.drawByDates($scope.fromDate, $scope.untilDate);
   }
-
 }]);
 
 app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminService', '$modal', function ($scope,$http,trafficFlowService,adminService,$modal){
@@ -684,7 +657,7 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
   adminService.cameraList().then(function(data){
     $scope.cameras = [];
     angular.forEach(data.data, function(data){
-        $scope.cameras.push(data);
+      $scope.cameras.push(data);
     });
     $scope.selected = $scope.cameras[0];
     $scope.selectedDay = $scope.days[0];
@@ -693,8 +666,8 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
     $scope.drawByDays($scope.selected.id);
     $scope.drawByMonths($scope.selected.id);
   }, function () {
-      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
-        placement: 'center'});
+    $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+      placement: 'center'});
   });
 
   $scope.drawByHours = function (camera, day) {
@@ -708,13 +681,18 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
     $scope.hourSeries = [];
     $scope.hourData = []; 
     $scope.dataAux4 = []; 
+
+    $scope.averageHourLabels = [];
+    $scope.averageHourSeries = [];
+    $scope.averageHourData = []; 
+    $scope.dataAux5 = [];
     for(var i = 0; i < 24; i++){
       $scope.hourLabels.push(i+":00 hs");
       $scope.dataAux4.push(0);
+      $scope.dataAux5.push(0);
     }  
-    console.log($scope.hourLabels);    
+
     trafficFlowService.detectedObjectsHistogramByHour($scope.auxCamera, $scope.auxDay).then(function(data){
-      console.log("data",data);
       angular.forEach(data.data, function(data){
         var position = data[0] - 1;
         $scope.dataAux4.splice(position,1,data[1]);
@@ -724,7 +702,19 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
     }, function () {
       $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
         placement: 'center'});
-  });
+    });
+
+    trafficFlowService.detectedObjectsAverageHistogramByHour($scope.auxCamera, $scope.auxDay).then(function(data){
+      angular.forEach(data.data, function(data){
+        var position = data[0] - 1;
+        $scope.dataAux5.splice(position,1,data[1]);
+      });
+      $scope.averageHourSeries = ['Object detected'];
+      $scope.averageHourData = [$scope.dataAux5];   
+    }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
+    });
   };
 
   $scope.drawByPeakHours = function (camera) {
@@ -746,7 +736,7 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
     }, function () {
       $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
         placement: 'center'});
-  });
+    });
   };
 
   $scope.drawByDays = function (camera) {
@@ -754,11 +744,17 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
     $scope.daySeries = [];
     $scope.dayData = []; 
     $scope.dataAux2 = [];
-    
+
+    $scope.averageDayLabels = [];
+    $scope.averageDaySeries = [];
+    $scope.averageDayData = []; 
+    $scope.dataAux6 = [];
+
     for(var i = 0; i < 12; i++){
       $scope.dataAux2.push(0);
+      $scope.dataAux6.push(0);
     }     
-    
+
     trafficFlowService.detectedObjectsHistogramByDayOfTheWeek(camera).then(function(data){
       var i = 1;
       angular.forEach(data.data, function(data){
@@ -771,7 +767,21 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
     }, function () {
       $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
         placement: 'center'});
-  });
+    });
+
+    trafficFlowService.detectedObjectsAverageHistogramByDayOfTheWeek(camera).then(function(data){
+      var i = 1;
+      angular.forEach(data.data, function(data){
+        var position = data[0] - 1;
+        $scope.dataAux6.splice(position,1,data[1]);
+      });  
+      $scope.averageDayLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      $scope.averageDaySeries = ['Object detected'];
+      $scope.averageDayData = [$scope.dataAux6];
+    }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
+    });
   };
 
   $scope.drawByMonths = function (camera) {
@@ -779,11 +789,17 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
     $scope.monthSeries = [];
     $scope.monthData = []; 
     $scope.dataAux3 = [];
-    
+
+    $scope.averageMonthLabels = [];
+    $scope.averageMonthSeries = [];
+    $scope.averageMonthData = []; 
+    $scope.dataAux7 = [];
+
     for(var i = 0; i < 12; i++){
       $scope.dataAux3.push(0);
+      $scope.dataAux7.push(0);
     }     
-    
+
     trafficFlowService.detectedObjectsHistogramByMonthOfTheYear(camera).then(function(data){
       var i = 1;
       angular.forEach(data.data, function(data){
@@ -796,12 +812,22 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
     }, function () {
       $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
         placement: 'center'});
-  });
+    });
+
+    trafficFlowService.detectedObjectsAverageHistogramByMonthOfTheYear(camera).then(function(data){
+      var i = 1;
+      angular.forEach(data.data, function(data){
+        var position = data[0] - 1;
+        $scope.dataAux7.splice(position,1,data[1]);
+      });
+      $scope.averageMonthLabels = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      $scope.averageMonthSeries = ['Object detected'];
+      $scope.averageMonthData = [$scope.dataAux7];
+    }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
+    });
   };
-
-
-
-
 }]);
 
 app.controller('adminCtrl',[ '$scope', 'adminService', '$modal', '$alert', 'DTOptionsBuilder', 'DTDefaultOptions', 'DTColumnDefBuilder', function ($scope, adminService, $modal, $alert, DTOptionsBuilder, DTDefaultOptions, DTColumnDefBuilder) {

@@ -1,5 +1,5 @@
 <div id="statistics">
-  <div bs-active-pane="tabsHorizontal" ng-click="activeTab(tabsHorizontal)" bs-tabs>
+  <div bs-active-pane="tabsHorizontal" bs-tabs>
     <div title="Ranking historical" bs-pane>
       <div class="Back form-group"><br>
         <div class="container text-center">
@@ -7,28 +7,26 @@
             <h1><strong> TOP 5 </strong></h1>
           </div>
           <div class="col-xs-12">
-            <canvas id="historical" chart-legend="true" width="100%" height="100%"></canvas>
+            <canvas id="historical" class="chart-base" chart-data="data1" chart-labels="labels" chart-type="type" chart-legend="true" chart-options="options" width="100%" height="80%"></canvas>
           </div>
         </div>
       </div>
     </div>
     <div title="Ranking by year" bs-pane>
       <form class="form-inline container col-xs-12 col-xs-offset-1">
-          <br>
-          <div class="form-group">
-            <label class="control-label"><i class="fa fa-calendar"><span class="glyphicon glyphicon-calendar"></span></i> Select year:</label>
-            <input type="text" class="form-control" ng-change="openByYear(selectedDate)" ng-model="selectedDate" data-min-view="2" data-min-date="{{minDate}}" data-max-date="{{maxDate}}" data-date-format="yyyy" data-autoclose="true" bs-datepicker>
-          </div>
+        <br>
+        <div class="form-group">
+          <label class="control-label"><i class="fa fa-calendar"><span class="glyphicon glyphicon-calendar"></span></i> Select year:</label>
+          <input type="text" class="form-control" ng-change="openByYear(selectedDate)" ng-model="selectedDate" data-min-view="2" data-min-date="{{minDate}}" data-max-date="{{maxDate}}" data-date-format="yyyy" data-autoclose="true" bs-datepicker>
+        </div>
       </form>
       <div class="Back form-group"><br>
-        
         <div class="container text-center">
           <div class="col-xs-12">
             <h1><strong> TOP 5 </strong></h1>
-            <!--<h1><strong> TOP 5 ({{year}})</strong></h1>-->
           </div>
           <div class="col-xs-12"> 
-            <canvas id="byYear" chart-legend="true" width="100%" height="100%"></canvas>
+            <canvas id="byYear" class="chart-base" chart-data="data2" chart-labels="labels" chart-type="type" chart-legend="true" chart-options="options" width="100%" height="80%"></canvas>
           </div>
         </div>
       </div>
@@ -38,21 +36,19 @@
         <br>
         <div class="form-group">
           <label class="control-label"><i class="fa fa-calendar"><span class="glyphicon glyphicon-calendar"></span></i> Select month:</label>
-          <input type="text" class="form-control" ng-change="openByMonth(selectedDate)" ng-model="selectedDate" data-min-view="1" data-min-date="{{minDate}}" data-max-date="{{maxDate}}" data-date-format="MM/yyyy" data-autoclose="true" bs-datepicker>
+          <input type="text" class="form-control" ng-change="openByMonth(selectedDate2)" ng-model="selectedDate2" data-min-view="1" data-min-date="{{minDate}}" data-max-date="{{maxDate}}" data-date-format="MM/yyyy" data-autoclose="true" bs-datepicker>
         </div>
       </form>
       <div class="Back form-group"><br>
         <div class="container text-center">
           <div class="col-xs-12">
             <h1><strong> TOP 5 </strong></h1>
-            <!--<h2> ({{"Month: " + (selectedDate.parse) +" Year: "+  yearByM}})</h2>-->
           </div>
           <div class="col-xs-12">
-            <canvas id="byMonth" chart-legend="true" width="100%" height="100%"></canvas>
+            <canvas id="byMonth" class="chart-base" chart-data="data3" chart-labels="labels" chart-type="type" chart-legend="true" chart-options="options" width="100%" height="80%"></canvas>
           </div>
         </div>
       </div>
-
     </div>
     <div title="Ranking by dates" bs-pane>
       <form class="form-inline container col-xs-12 col-xs-offset-1">
@@ -64,21 +60,17 @@
         <div class="form-group dropdown-whiteColor">
           <input type="text" class="form-control" ng-change="changeUntilDate(untilDate)" ng-model="untilDate"  data-min-date="{{fromDate}}" data-max-date="{{maxDate}}" data-autoclose="true" bs-datepicker>
         </div>
-
       </form>
       <div class="Back form-group"><br>
-
         <div class="container text-center">
           <div class="col-xs-12">
             <h1><strong> TOP 5 </strong></h1>
-            <!--<h3> ({{"from: " + (fromDate.toDateString(fromDate)) +" to: "+  (untilDate.toDateString(untilDate))}}) </h3>-->
           </div>
           <div class="col-xs-12">
-            <canvas id="byDates" chart-legend="true" width="100%" height="100%"></canvas>
+            <canvas id="byDates" class="chart-base" chart-data="data4" chart-labels="labels" chart-type="type" chart-legend="true" chart-options="options" width="100%" height="80%"></canvas>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
