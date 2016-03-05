@@ -125,14 +125,29 @@ app.service('trafficFlowService', ['$http', function ($http){
   };  
 
   var detectedObjectsHistogramByHour = function (camera,day) {
-    return $http.get('http://192.168.2.120:8080/REST-API/detectedObject/detectedObjectsHistogramByHour?dayOfTheWeek='+ day + '&cameraId=' + camera);
+    return $http.get('http://192.168.2.120:8080/REST-API/detectedObject/detectedObjectsHistogramByHour?dayOfTheWeek=' + day + '&cameraId=' + camera);
+  }; 
+
+  var detectedObjectsAverageHistogramByHour = function (camera,day) {
+    return $http.get('http://192.168.2.120:8080/REST-API/detectedObject/detectedObjectsAverageHistogramByHour?dayOfTheWeek=' + day + '&cameraId=' + camera);
+  }; 
+
+  var detectedObjectsAverageHistogramByDayOfTheWeek = function (camera) {
+    return $http.get('http://192.168.2.120:8080/REST-API/detectedObject/detectedObjectsAverageHistogramByDayOfTheWeek?cameraId=' + camera);
+  }; 
+
+  var detectedObjectsAverageHistogramByMonthOfTheYear = function (camera) {
+    return $http.get('http://192.168.2.120:8080/REST-API/detectedObject/detectedObjectsAverageHistogramByMonthOfTheYear?cameraId=' + camera);
   }; 
 
   return {
     peakHoursByDaysOfTheWeekAndCamera : peakHoursByDaysOfTheWeekAndCamera,
     detectedObjectsHistogramByMonthOfTheYear : detectedObjectsHistogramByMonthOfTheYear,
     detectedObjectsHistogramByDayOfTheWeek : detectedObjectsHistogramByDayOfTheWeek,
-    detectedObjectsHistogramByHour : detectedObjectsHistogramByHour
+    detectedObjectsHistogramByHour : detectedObjectsHistogramByHour,
+    detectedObjectsAverageHistogramByHour : detectedObjectsAverageHistogramByHour,
+    detectedObjectsAverageHistogramByDayOfTheWeek : detectedObjectsAverageHistogramByDayOfTheWeek,
+    detectedObjectsAverageHistogramByMonthOfTheYear : detectedObjectsAverageHistogramByMonthOfTheYear 
   }
 
 }]);
