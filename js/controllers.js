@@ -730,7 +730,7 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
     $scope.averageHourData = []; 
     $scope.dataAux5 = [];
     for(var i = 0; i < 24; i++){
-      $scope.hourLabels.push(i+":00 hs");
+      $scope.averageHourLabels.push(i+":00 hs");
       $scope.dataAux5.push(0);
     }  
 
@@ -791,7 +791,7 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
         var position = data[0] - 1;
         $scope.dataAux6.splice(position,1,data[1]);
       }); 
-      clearChart("averageDaySeries");
+      clearChart("chartAverageByDay");
       $scope.averageDayLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       $scope.averageDaySeries = ['Object detected'];
       $scope.averageDayData = [$scope.dataAux6];
