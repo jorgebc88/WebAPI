@@ -357,10 +357,6 @@ app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', 'c
   });
   
   $scope.draw = function (tabs, data) {
-    if (angular.isDefined()) {
-      chart.destroy();
-      delete chart;
-    }
     $scope.tabs = tabs;
     if ($scope.tabs == 0) {
       $scope.legend = "All";
@@ -457,41 +453,34 @@ app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', 'c
       if (value.objectType == $scope.objectType || $scope.objectType == 'All') {
         var date = new Date(value.date);
         if(date.getDay() == 0) {
-          if (value.direction == "North")
             $scope.sundayUp.push(value);
         }
         else if(date.getDay() == 1) {
-          if (value.direction == "North")
             $scope.mondayUp.push(value);
         }
         else if(date.getDay() == 2) {
-          if (value.direction == "North")
             $scope.tuesdayUp.push(value);
         }
         else if(date.getDay() == 3) {
-          if (value.direction == "North")
             $scope.wednesdayUp.push(value);
         }
         else if(date.getDay() == 4) {
-          if (value.direction == "North")
             $scope.thursdayUp.push(value);
         }
         else if(date.getDay() == 5) {
-          if (value.direction == "North")
             $scope.fridayUp.push(value);
         }
         else if(date.getDay() == 6) {
-          if (value.direction == "North")
             $scope.saturdayUp.push(value);
         }
       }
     });
+
     $scope.$on('create', function (event, chart) {
-       
         $scope.chart = chart;
         $scope.chart.destroy();
-        
     });
+
     $scope.labels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     $scope.series = [$scope.legend + '-North'];
     $scope.data = [
@@ -671,6 +660,10 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
   });
 
   $scope.drawByHours = function (camera, day) {
+    $scope.$on('create', function (event, chart) {
+        $scope.chartHours = chart;
+        $scope.chartHours.destroy();
+    });
     if (camera != 0) {
       $scope.auxCamera = camera;
     }
@@ -718,6 +711,10 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
   };
 
   $scope.drawByPeakHours = function (camera) {
+    $scope.$on('create', function (event, chart) {
+        $scope.chartPeakHours = chart;
+        $scope.chartPeakHours.destroy();
+    });
     $scope.peakHourLabels = [];
     $scope.peakHourSeries = [];
     $scope.peakHourData = []; 
@@ -740,6 +737,10 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
   };
 
   $scope.drawByDays = function (camera) {
+    $scope.$on('create', function (event, chart) {
+        $scope.chartDays = chart;
+        $scope.chartDays.destroy();
+    });
     $scope.dayLabels = [];
     $scope.daySeries = [];
     $scope.dayData = []; 
@@ -785,6 +786,10 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
   };
 
   $scope.drawByMonths = function (camera) {
+    $scope.$on('create', function (event, chart) {
+        $scope.chartMonth = chart;
+        $scope.chartMonth.destroy();
+    });
     $scope.monthLabels = [];
     $scope.monthSeries = [];
     $scope.monthData = []; 

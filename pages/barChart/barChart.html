@@ -61,13 +61,15 @@
           </div>
           <hr>
           <div>
-            <form action="" class="form-inline">
+            <div class="form-group">
               <div ng-show="showCameraList" class="form-group dropdown-whiteColor">
                 <label class="control-label"><span class="glyphicon glyphicon-facetime-video"></span> Camera </label>
                 <button type="button" class="btn btn-default dropdown-whiteColor" ng-model="cameraSelected" data-html="1" bs-options="camera.location for camera in cameras" bs-select>
                   Action <span class="caret"></span>
                 </button>
               </div>
+            </div>
+            <form action="" class="form-inline">
               <div ng-show="showToday" class="form-group dropdown-whiteColor">
                 <label class="control-label"><span class="glyphicon glyphicon-calendar"></span> Date </label>
                 <input type="text" class="form-control" ng-model="Today" name="date" bs-datepicker disabled>
