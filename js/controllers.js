@@ -357,6 +357,14 @@ app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', 'c
   });
   
   $scope.draw = function (tabs, data) {
+    var $chart;
+    $scope.$on("create", function (event, chart) {
+      if (typeof $chart !== "undefined") {
+        $chart.destroy();
+      }
+
+      $chart = chart;
+    });
     $scope.tabs = tabs;
     if ($scope.tabs == 0) {
       $scope.legend = "All";
@@ -474,11 +482,6 @@ app.controller('barChartCtrl',['$scope','$http','$location', 'objectService', 'c
             $scope.saturdayUp.push(value);
         }
       }
-    });
-
-    $scope.$on('create', function (event, chart) {
-        $scope.chart = chart;
-        $scope.chart.destroy();
     });
 
     $scope.labels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -631,7 +634,7 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
   }
 }]);
 
-app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminService', '$modal', function ($scope,$http,trafficFlowService,adminService,$modal){
+app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminService', '$modal','$timeout', function ($scope,$http,trafficFlowService,adminService,$modal,$timeout){
   $scope.tabsHorizontal = 0;
   $scope.days = [{id: 1, day:"Sunday"}, {id: 2, day:"Monday"}, {id: 3, day:"Tuesday"}, {id: 4, day:"Wednesday"}, {id: 5, day:"Thursday"}, {id: 6, day:"Friday"}, {id: 7, day:"Saturday"}];
   $scope.auxCamera = 0;
@@ -660,9 +663,13 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
   });
 
   $scope.drawByHours = function (camera, day) {
-    $scope.$on('create', function (event, chart) {
-        $scope.chartHours = chart;
-        $scope.chartHours.destroy();
+    var $chart;
+    $scope.$on("create", function (event, chart) {
+      if (typeof $chart !== "undefined") {
+        $chart.destroy();
+      }
+
+      $chart = chart;
     });
     if (camera != 0) {
       $scope.auxCamera = camera;
@@ -711,9 +718,13 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
   };
 
   $scope.drawByPeakHours = function (camera) {
-    $scope.$on('create', function (event, chart) {
-        $scope.chartPeakHours = chart;
-        $scope.chartPeakHours.destroy();
+    var $chart;
+    $scope.$on("create", function (event, chart) {
+      if (typeof $chart !== "undefined") {
+        $chart.destroy();
+      }
+
+      $chart = chart;
     });
     $scope.peakHourLabels = [];
     $scope.peakHourSeries = [];
@@ -737,9 +748,13 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
   };
 
   $scope.drawByDays = function (camera) {
-    $scope.$on('create', function (event, chart) {
-        $scope.chartDays = chart;
-        $scope.chartDays.destroy();
+    var $chart;
+    $scope.$on("create", function (event, chart) {
+      if (typeof $chart !== "undefined") {
+        $chart.destroy();
+      }
+
+      $chart = chart;
     });
     $scope.dayLabels = [];
     $scope.daySeries = [];
@@ -775,10 +790,12 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
       angular.forEach(data.data, function(data){
         var position = data[0] - 1;
         $scope.dataAux6.splice(position,1,data[1]);
-      });  
-      $scope.averageDayLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-      $scope.averageDaySeries = ['Object detected'];
-      $scope.averageDayData = [$scope.dataAux6];
+      }); 
+      $timeout(function() { 
+        $scope.averageDayLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        $scope.averageDaySeries = ['Object detected'];
+        $scope.averageDayData = [$scope.dataAux6];
+      });
     }, function () {
       $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
         placement: 'center'});
@@ -786,9 +803,13 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
   };
 
   $scope.drawByMonths = function (camera) {
-    $scope.$on('create', function (event, chart) {
-        $scope.chartMonth = chart;
-        $scope.chartMonth.destroy();
+    var $chart;
+    $scope.$on("create", function (event, chart) {
+      if (typeof $chart !== "undefined") {
+        $chart.destroy();
+      }
+
+      $chart = chart;
     });
     $scope.monthLabels = [];
     $scope.monthSeries = [];
