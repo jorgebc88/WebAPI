@@ -634,7 +634,7 @@ app.controller('rankingCtrl',['$scope','$http', 'rankingService', 'adminService'
   }
 }]);
 
-app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminService', '$modal','$timeout', function ($scope,$http,trafficFlowService,adminService,$modal,$timeout){
+app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminService', '$modal', '$timeout', 'ChartJs', function ($scope,$http,trafficFlowService,adminService,$modal,$timeout,ChartJs){
   $scope.tabsHorizontal = 0;
   $scope.days = [{id: 1, day:"Sunday"}, {id: 2, day:"Monday"}, {id: 3, day:"Tuesday"}, {id: 4, day:"Wednesday"}, {id: 5, day:"Thursday"}, {id: 6, day:"Friday"}, {id: 7, day:"Saturday"}];
   $scope.auxCamera = 0;
@@ -662,70 +662,7 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
       placement: 'center'});
   });
 
-  $scope.drawByHours = function (camera, day) {
-    var $chart;
-    $scope.$on("create", function (event, chart) {
-      if (typeof $chart !== "undefined") {
-        $chart.destroy();
-      }
-
-      $chart = chart;
-    });
-    if (camera != 0) {
-      $scope.auxCamera = camera;
-    }
-    if (day != 0) {
-      $scope.auxDay = day;
-    }
-    $scope.hourLabels = [];
-    $scope.hourSeries = [];
-    $scope.hourData = []; 
-    $scope.dataAux4 = []; 
-
-    $scope.averageHourLabels = [];
-    $scope.averageHourSeries = [];
-    $scope.averageHourData = []; 
-    $scope.dataAux5 = [];
-    for(var i = 0; i < 24; i++){
-      $scope.hourLabels.push(i+":00 hs");
-      $scope.dataAux4.push(0);
-      $scope.dataAux5.push(0);
-    }  
-
-    trafficFlowService.detectedObjectsHistogramByHour($scope.auxCamera, $scope.auxDay).then(function(data){
-      angular.forEach(data.data, function(data){
-        var position = data[0] - 1;
-        $scope.dataAux4.splice(position,1,data[1]);
-      });
-      $scope.hourSeries = ['Object detected'];
-      $scope.hourData = [$scope.dataAux4];   
-    }, function () {
-      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
-        placement: 'center'});
-    });
-
-    trafficFlowService.detectedObjectsAverageHistogramByHour($scope.auxCamera, $scope.auxDay).then(function(data){
-      angular.forEach(data.data, function(data){
-        var position = data[0] - 1;
-        $scope.dataAux5.splice(position,1,data[1]);
-      });
-      $scope.averageHourSeries = ['Object detected'];
-      $scope.averageHourData = [$scope.dataAux5];   
-    }, function () {
-      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
-        placement: 'center'});
-    });
-  };
-
   $scope.drawByPeakHours = function (camera) {
-    var $chart;
-    $scope.$on("create", function (event, chart) {
-      if (typeof $chart !== "undefined") {
-        $chart.destroy();
-      }
-
-      $chart = chart;
-    });
     $scope.peakHourLabels = [];
     $scope.peakHourSeries = [];
     $scope.peakHourData = []; 
@@ -738,6 +675,7 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
         var position = data[0] - 1;
         $scope.dataAux.splice(position,1,data[1]);
       });
+      clearChart("chartByPeakHour");
       $scope.peakHourLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       $scope.peakHourSeries = ['Peak hour'];
       $scope.peakHourData = [$scope.dataAux];   
@@ -747,28 +685,77 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
     });
   };
 
-  $scope.drawByDays = function (camera) {
-    var $chart;
-    $scope.$on("create", function (event, chart) {
-      if (typeof $chart !== "undefined") {
-        $chart.destroy();
-      }
+  $scope.drawByHours = function (camera, day) {
+    if (camera != 0) {
+      $scope.auxCamera = camera;
+    }
+    if (day != 0) {
+      $scope.auxDay = day;
+    }
+    $scope.hourLabels = [];
+    $scope.hourSeries = [];
+    $scope.hourData = []; 
+    $scope.dataAux4 = []; 
 
-      $chart = chart;
+    for(var i = 0; i < 24; i++){
+      $scope.hourLabels.push(i+":00 hs");
+      $scope.dataAux4.push(0);
+    }  
+
+    trafficFlowService.detectedObjectsHistogramByHour($scope.auxCamera, $scope.auxDay).then(function(data){
+      angular.forEach(data.data, function(data){
+        var position = data[0] - 1;
+        $scope.dataAux4.splice(position,1,data[1]);
+      });
+      clearChart("chartByHour");
+      $scope.hourSeries = ['Object detected'];
+      $scope.hourData = [$scope.dataAux4];   
+    }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
     });
+
+    $scope.drawAverageByHours(camera, day);
+  };
+  $scope.drawAverageByHours = function (camera, day) {
+    if (camera != 0) {
+      $scope.auxCamera = camera;
+    }
+    if (day != 0) {
+      $scope.auxDay = day;
+    }
+
+    $scope.averageHourLabels = [];
+    $scope.averageHourSeries = [];
+    $scope.averageHourData = []; 
+    $scope.dataAux5 = [];
+    for(var i = 0; i < 24; i++){
+      $scope.hourLabels.push(i+":00 hs");
+      $scope.dataAux5.push(0);
+    }  
+
+    trafficFlowService.detectedObjectsAverageHistogramByHour($scope.auxCamera, $scope.auxDay).then(function(data){
+      angular.forEach(data.data, function(data){
+        var position = data[0] - 1;
+        $scope.dataAux5.splice(position,1,data[1]);
+      });
+      clearChart("chartAverageByHour");
+      $scope.averageHourSeries = ['Object detected'];
+      $scope.averageHourData = [$scope.dataAux5];   
+    }, function () {
+      $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
+        placement: 'center'});
+    });
+  };
+
+  $scope.drawByDays = function (camera) {
     $scope.dayLabels = [];
     $scope.daySeries = [];
     $scope.dayData = []; 
     $scope.dataAux2 = [];
 
-    $scope.averageDayLabels = [];
-    $scope.averageDaySeries = [];
-    $scope.averageDayData = []; 
-    $scope.dataAux6 = [];
-
     for(var i = 0; i < 12; i++){
       $scope.dataAux2.push(0);
-      $scope.dataAux6.push(0);
     }     
 
     trafficFlowService.detectedObjectsHistogramByDayOfTheWeek(camera).then(function(data){
@@ -777,6 +764,7 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
         var position = data[0] - 1;
         $scope.dataAux2.splice(position,1,data[1]);
       });  
+      clearChart("chartByDay");
       $scope.dayLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       $scope.daySeries = ['Object detected'];
       $scope.dayData = [$scope.dataAux2];
@@ -785,17 +773,28 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
         placement: 'center'});
     });
 
+    $scope.drawAverageByDays(camera);
+  };
+  $scope.drawAverageByDays = function (camera) {
+    $scope.averageDayLabels = [];
+    $scope.averageDaySeries = [];
+    $scope.averageDayData = []; 
+    $scope.dataAux6 = [];
+
+    for(var i = 0; i < 12; i++){
+      $scope.dataAux6.push(0);
+    }     
+
     trafficFlowService.detectedObjectsAverageHistogramByDayOfTheWeek(camera).then(function(data){
       var i = 1;
       angular.forEach(data.data, function(data){
         var position = data[0] - 1;
         $scope.dataAux6.splice(position,1,data[1]);
       }); 
-      $timeout(function() { 
-        $scope.averageDayLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        $scope.averageDaySeries = ['Object detected'];
-        $scope.averageDayData = [$scope.dataAux6];
-      });
+      clearChart("averageDaySeries");
+      $scope.averageDayLabels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      $scope.averageDaySeries = ['Object detected'];
+      $scope.averageDayData = [$scope.dataAux6];
     }, function () {
       $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
         placement: 'center'});
@@ -803,27 +802,13 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
   };
 
   $scope.drawByMonths = function (camera) {
-    var $chart;
-    $scope.$on("create", function (event, chart) {
-      if (typeof $chart !== "undefined") {
-        $chart.destroy();
-      }
-
-      $chart = chart;
-    });
     $scope.monthLabels = [];
     $scope.monthSeries = [];
     $scope.monthData = []; 
     $scope.dataAux3 = [];
 
-    $scope.averageMonthLabels = [];
-    $scope.averageMonthSeries = [];
-    $scope.averageMonthData = []; 
-    $scope.dataAux7 = [];
-
     for(var i = 0; i < 12; i++){
       $scope.dataAux3.push(0);
-      $scope.dataAux7.push(0);
     }     
 
     trafficFlowService.detectedObjectsHistogramByMonthOfTheYear(camera).then(function(data){
@@ -832,6 +817,7 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
         var position = data[0] - 1;
         $scope.dataAux3.splice(position,1,data[1]);
       });
+      clearChart("chartByMonth");
       $scope.monthLabels = ["January","February","March","April","May","June","July","August","September","October","November","December"];
       $scope.monthSeries = ['Object detected'];
       $scope.monthData = [$scope.dataAux3];
@@ -840,20 +826,58 @@ app.controller('trafficFlowCtrl',['$scope','$http','trafficFlowService','adminSe
         placement: 'center'});
     });
 
+    $scope.drawAverageByMonths(camera);
+  };
+
+  $scope.drawAverageByMonths = function (camera) {
+    $scope.averageMonthLabels = [];
+    $scope.averageMonthSeries = [];
+    $scope.averageMonthData = []; 
+    $scope.dataAux7 = [];
+
+    for(var i = 0; i < 12; i++){
+      $scope.dataAux7.push(0);
+    }     
+
     trafficFlowService.detectedObjectsAverageHistogramByMonthOfTheYear(camera).then(function(data){
       var i = 1;
       angular.forEach(data.data, function(data){
         var position = data[0] - 1;
         $scope.dataAux7.splice(position,1,data[1]);
       });
+      clearChart("chartAverageByMonth");
       $scope.averageMonthLabels = ["January","February","March","April","May","June","July","August","September","October","November","December"];
       $scope.averageMonthSeries = ['Object detected'];
       $scope.averageMonthData = [$scope.dataAux7];
+     
     }, function () {
       $modal({title: 'ERROR '+ status, content: 'Internal Server Error',  animation: 'am-fade-and-scale',
         placement: 'center'});
     });
   };
+
+  function clearChart(elementId) {
+    if (document.getElementById(elementId)) {
+        var charts = ChartJs.Chart.instances; // Get all chart instances
+        for (var key in charts){ // loop looking for the chart you want to remove
+            if (!charts.hasOwnProperty(key)){
+                continue;
+            }
+            var chartAux = ChartJs.Chart.instances[key]; 
+            if (chartAux.chart.ctx.canvas.id === elementId){ 
+                // Remove chart-legend before destroying the chart
+                var parent = chartAux.chart.ctx.canvas.parentElement;
+                var legend = chartAux.chart.ctx.canvas.nextElementSibling;
+                //parent.removeChild(legend);
+                // Compare id with elementId passed by and if it is the one            
+                // you want to remove just call the destroy function
+                ChartJs.Chart.instances[key].destroy(); 
+            }
+        }
+    }
+  }
+
+
 }]);
 
 app.controller('adminCtrl',[ '$scope', 'adminService', '$modal', '$alert', 'DTOptionsBuilder', 'DTDefaultOptions', 'DTColumnDefBuilder', function ($scope, adminService, $modal, $alert, DTOptionsBuilder, DTDefaultOptions, DTColumnDefBuilder) {
@@ -898,7 +922,7 @@ app.controller('adminCtrl',[ '$scope', 'adminService', '$modal', '$alert', 'DTOp
               $scope.values = dt.rows({ selected: true }).data();
               var count = dt.rows( { selected: true } ).indexes().length;
               if(count > 0) {
-                $scope.activeCamera($scope.values);
+                $scope.modifyCameras($scope.values);
               } else {
                  $modal({title: 'Can not perform action, please select one element', animation: 'am-fade-and-scale',
                 placement: 'center'});
@@ -947,7 +971,7 @@ app.controller('adminCtrl',[ '$scope', 'adminService', '$modal', '$alert', 'DTOp
     };
   };
 
-  $scope.level = 2;
+  $scope.level = "1";
 
   $scope.formUserAllGood = function () {
     if($scope.usernameGood && $scope.passwordGood && $scope.passwordCGood){
@@ -976,7 +1000,8 @@ app.controller('adminCtrl',[ '$scope', 'adminService', '$modal', '$alert', 'DTOp
   };
   $scope.cameraList();
 
-  $scope.activeCamera = function(data){ 
+  $scope.modifyCameras = function(data){ 
+    console.log(data);
     var counter = 0;
     var length = data.length;
    
@@ -999,9 +1024,13 @@ app.controller('adminCtrl',[ '$scope', 'adminService', '$modal', '$alert', 'DTOp
       });
   };
 
+  $scope.activeCamera = "1";
+  $scope.pointingAt = "North";
+
   $scope.formCameraAllGood = function () {
+    console.log(parseInt($scope.myform.activeCamera.$viewValue));
     if($scope.locationGood && $scope.latitudeGood && $scope.longitudeGood && $scope.ipGood){
-      adminService.addCamera($scope.myform.location.$viewValue,$scope.myform.latitude.$viewValue, $scope.myform.longitude.$viewValue, $scope.myform.ip.$viewValue, $scope.myform.activeCamera.$viewValue).then(function (response){
+      adminService.addCamera($scope.myform.location.$viewValue,$scope.myform.latitude.$viewValue, $scope.myform.longitude.$viewValue, $scope.myform.ip.$viewValue, $scope.myform.pointingAt.$viewValue, parseInt($scope.myform.activeCamera.$viewValue)).then(function (response){
         $alert({title: 'New camera added successfully!', placement: 'top', type: 'info', show: true, duration: 2});
         $scope.cameraList();
       }, function (response) {

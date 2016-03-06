@@ -69,8 +69,8 @@ app.service('adminService', ['$http', function ($http){
     return $http.get('http://192.168.2.120:8080/REST-API/camera/modifyCamera?id='+ id + '&active=' + active);
   };
 
-  var addCamera = function (location, latitude, longitude, ip, active){
-    return $http.post('http://192.168.2.120:8080/REST-API/camera/newCamera', {"location": location, "latitude": latitude, "longitude": longitude, "ip": ip, "active": active});
+  var addCamera = function (location, latitude, longitude, ip, pointingAt, active){
+    return $http.post('http://192.168.2.120:8080/REST-API/camera/newCamera', {"location": location, "latitude": latitude, "longitude": longitude, "ip": ip, "active": active, "pointingAt": pointingAt});
   };
 
   return {
