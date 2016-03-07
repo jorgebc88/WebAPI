@@ -1,8 +1,9 @@
 var app = angular.module('myApp', ['app.controllers','app.services','app.directives','ngRoute','ngResource','ngCookies']);
+
 app.run(['$rootScope', '$location','$cookieStore',function($rootScope, $location,$cookieStore){
   $rootScope.$on('$routeChangeStart',function(event, next, current){
     if($cookieStore.get('connected') == false || $cookieStore.get('connected') == null ){
-      if(next.templateUrl == 'pages/home/home.html' || next.templateUrl == 'pages/barChart/barChart.html' || next.templateUrl == 'pages/admin/admin.html'){
+      if(next.templateUrl == 'pages/pieChart/pieChart.html' || next.templateUrl == 'pages/barChart/barChart.html' || next.templateUrl == 'pages/ranking/ranking.html' || next.templateUrl == 'pages/trafficFlow/trafficFlow.html'){
         $location.path('/');
       }
     }
@@ -15,12 +16,14 @@ app.run(['$rootScope', '$location','$cookieStore',function($rootScope, $location
     }
   })
 }]);
+
 app.config(function($datepickerProvider) {
   angular.extend($datepickerProvider.defaults, {
     dateFormat: 'dd/MM/yyyy',
     startWeek: 1
   });
 });
+
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider
   .when('/', {
