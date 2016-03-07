@@ -1,4 +1,5 @@
 var app = angular.module('app.directives',[]);
+
 app.directive('validUsername', function () {
   return {
     require: 'ngModel',
@@ -13,6 +14,7 @@ app.directive('validUsername', function () {
     }
   }
 });
+
 app.directive('validPassword', function () {
   return {
     require: 'ngModel',
@@ -27,6 +29,7 @@ app.directive('validPassword', function () {
     }
   }
 });
+
 app.directive('validPasswordC', function () {
   return {
     require: 'ngModel',
@@ -41,6 +44,7 @@ app.directive('validPasswordC', function () {
     }
   }
 });
+
 app.directive('validLocation', function () {
   return {
     require: 'ngModel',
@@ -53,6 +57,7 @@ app.directive('validLocation', function () {
     }
   }
 });
+
 app.directive('validLatitude', function () {
   return {
     require: 'ngModel',
@@ -65,6 +70,7 @@ app.directive('validLatitude', function () {
     }
   }
 });
+
 app.directive('validLongitude', function () {
   return {
     require: 'ngModel',
@@ -77,6 +83,7 @@ app.directive('validLongitude', function () {
     }
   }
 });
+
 app.directive('validIp', function () {
   return {
     require: 'ngModel',
@@ -91,6 +98,7 @@ app.directive('validIp', function () {
     }
   }
 });
+
 app.directive('ngEnter', function() {
   return function(scope, element, attrs) {
     element.bind("keydown keypress", function(event) {
