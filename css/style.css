@@ -2,12 +2,23 @@ html{
   position: relative;
   font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
   background-color: #222;
+  height: 100%;
 }
 a:hover{
   text-decoration: none !important;
 }
 a:focus{
   outline: none !important;
+}
+.goog-te-banner-frame.skiptranslate {
+    display: none !important;
+    } 
+body {
+    top: 0px !important; 
+    }
+.backgroundLogin {
+  background-color: #222 !important;
+  height: 600px;
 }
 /*************************OTHER************************************/
 .aside {
