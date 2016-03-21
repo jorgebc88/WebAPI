@@ -52,7 +52,7 @@ app.controller("pieChartCtrl",['$scope','$http','$location', 'cameraService', '$
   };
 
   $scope.refresh = function (id) {
-    $scope.sse = $.SSE('http://192.168.2.120:8080/REST-API/detectedObject/serverSentEvents?cameraId=' + id, {
+    $scope.sse = $.SSE('http://localhost:8080/REST-API/detectedObject/serverSentEvents?cameraId=' + id, {
       onOpen: function (e) {
       },
       onEnd: function (e) {

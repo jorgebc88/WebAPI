@@ -22,7 +22,7 @@ app.controller('loginCtrl',['$scope','$http','$q','$log','$cookieStore','$locati
   $scope.login = function (){
     var userName = $scope.userName;
     var password = $scope.password;
-    var usr = $http.post('http://192.168.2.120:8080/REST-API/user/login', {"userName": userName, "password": password})
+    var usr = $http.post('http://localhost:8080/REST-API/user/login', {"userName": userName, "password": password})
     .then(function(response) {
       session.resolve(response.data);
     }, function (response) {

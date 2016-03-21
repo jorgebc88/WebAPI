@@ -42,7 +42,7 @@ app.controller('indexCtrl',['$scope','$cookieStore','$location','userConService'
 	};
 
 	$scope.logout = function(){
-		$http.get('http://192.168.2.120:8080/REST-API/user/logout');
+		$http.get('http://localhost:8080/REST-API/user/logout');
 		$scope.userConnected = {'name': "", 'level': "", 'connected':""};
 		$cookieStore.remove('connected');
 		$cookieStore.remove('level');
